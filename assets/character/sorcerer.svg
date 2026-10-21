@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
-  <!-- Original cartoon star wizard with a red cape and a crystal staff. The open left hand holds the prop. -->
+  <!-- Original cartoon star wizard in a blue robe and red cape, with a crystal staff. The open left hand holds the prop. -->
   <defs>
     <linearGradient id="robe" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7d52d6"/>
-      <stop offset="1" stop-color="#3b1f7a"/>
+      <stop offset="0" stop-color="#3f8ae8"/>
+      <stop offset="1" stop-color="#1a3f8f"/>
     </linearGradient>
     <linearGradient id="hat" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#6a42c4"/>
@@ -38,7 +38,7 @@
   <ellipse cx="142" cy="286" rx="16" ry="7" fill="#2e1764" stroke="#170a36" stroke-width="2"/>
 
   <!-- robe -->
-  <path d="M88 146 C78 196 68 246 62 284 L180 284 C174 246 164 196 152 146 Z" fill="url(#robe)" stroke="#24104f" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M88 146 C78 196 68 246 62 284 L180 284 C174 246 164 196 152 146 Z" fill="url(#robe)" stroke="#0d2763" stroke-width="3" stroke-linejoin="round"/>
   <path d="M64 276 L178 276" stroke="#ffd23f" stroke-width="5"/>
   <path d="M120 150 L120 274" stroke="#ffd23f" stroke-width="3" opacity="0.7"/>
   <g fill="#ffd23f">
@@ -51,12 +51,12 @@
   <rect x="88" y="172" width="64" height="9" rx="4" fill="#ffd23f" stroke="#b88a00" stroke-width="2"/>
 
   <!-- right sleeve, holding the staff -->
-  <path d="M150 154 C166 162 180 172 190 180" fill="none" stroke="#24104f" stroke-width="30" stroke-linecap="round"/>
+  <path d="M150 154 C166 162 180 172 190 180" fill="none" stroke="#0d2763" stroke-width="30" stroke-linecap="round"/>
   <path d="M150 154 C166 162 180 172 190 180" fill="none" stroke="url(#robe)" stroke-width="24" stroke-linecap="round"/>
   <circle cx="198" cy="182" r="11" fill="#f3c7a2" stroke="#c98f63" stroke-width="2"/>
 
   <!-- left sleeve, open hand (holds the prop) -->
-  <path d="M90 154 C76 166 64 176 56 184" fill="none" stroke="#24104f" stroke-width="30" stroke-linecap="round"/>
+  <path d="M90 154 C76 166 64 176 56 184" fill="none" stroke="#0d2763" stroke-width="30" stroke-linecap="round"/>
   <path d="M90 154 C76 166 64 176 56 184" fill="none" stroke="url(#robe)" stroke-width="24" stroke-linecap="round"/>
   <path d="M60 178 L52 190" stroke="#ffd23f" stroke-width="6" stroke-linecap="round"/>
   <circle cx="44" cy="190" r="11" fill="#f3c7a2" stroke="#c98f63" stroke-width="2"/>
@@ -65,17 +65,18 @@
     <path d="M56 160 L56 166 M53 163 L59 163"/>
   </g>
 
+  <!-- collar -->
+  <path d="M96 140 L120 166 L144 140 L136 136 L120 152 L104 136 Z" fill="#ffd23f" stroke="#b88a00" stroke-width="2" stroke-linejoin="round"/>
   <!-- head -->
-  <circle cx="120" cy="108" r="38" fill="#f3c7a2" stroke="#c98f63" stroke-width="2"/>
-  <!-- beard -->
-  <path d="M84 110 C82 150 98 196 120 214 C142 196 158 150 156 110 C146 128 136 134 120 134 C104 134 94 128 84 110 Z" fill="#f4f6fa" stroke="#aab3c4" stroke-width="2.5" stroke-linejoin="round"/>
-  <path d="M110 150 C112 170 116 188 120 200 M130 150 C128 170 124 188 120 200" fill="none" stroke="#c6cdd9" stroke-width="2" stroke-linecap="round"/>
-  <!-- moustache -->
-  <path d="M100 126 C108 118 116 120 120 125 C124 120 132 118 140 126 C132 132 124 130 120 127 C116 130 108 132 100 126 Z" fill="#ffffff" stroke="#aab3c4" stroke-width="1.5"/>
-  <!-- nose, eyes, brows -->
-  <circle cx="120" cy="114" r="6" fill="#eaa985"/>
-  <path d="M100 104 Q106 98 112 104 M128 104 Q134 98 140 104" fill="none" stroke="#3a2a1a" stroke-width="3.5" stroke-linecap="round"/>
-  <path d="M96 94 C102 88 110 88 114 92 M126 92 C130 88 138 88 144 94" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+  <path d="M86 92 C80 104 80 122 88 132 L94 104 Z M154 92 C160 104 160 122 152 132 L146 104 Z" fill="#5a3a22" stroke="#3a2414" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="120" cy="108" r="36" fill="#f3c7a2" stroke="#c98f63" stroke-width="2"/>
+  <ellipse cx="98" cy="120" rx="7" ry="4.5" fill="#ff7aa8" opacity="0.35"/>
+  <ellipse cx="142" cy="120" rx="7" ry="4.5" fill="#ff7aa8" opacity="0.35"/>
+  <!-- nose, eyes, brows, smile -->
+  <circle cx="120" cy="116" r="5" fill="#eaa985"/>
+  <path d="M100 106 Q106 100 112 106 M128 106 Q134 100 140 106" fill="none" stroke="#3a2a1a" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M98 96 C104 92 110 92 114 95 M126 95 C130 92 136 92 142 96" fill="none" stroke="#5a3a22" stroke-width="4" stroke-linecap="round"/>
+  <path d="M108 128 Q120 138 132 128" fill="none" stroke="#7a2b1f" stroke-width="3" stroke-linecap="round"/>
 
   <!-- hat -->
   <path d="M80 82 C94 58 104 30 126 8 C134 4 150 12 156 22 C146 20 140 22 138 30 C140 50 150 66 162 82 Z" fill="url(#hat)" stroke="#170a36" stroke-width="3" stroke-linejoin="round"/>

@@ -69,6 +69,8 @@ Pick a companion in **Settings → Character**:
 - **Star wizard:** steps out of a swirling magic portal, then vanishes back into one.
 - **Archer:** fires an arrow into the top of the screen trailing a line, drops onto it and
   zips down, then gets pulled back up it.
+- **Sea guardian:** rides a water spout up from the bottom of the screen, is lowered onto
+  his spot as it drains away in a splash, then sinks back down into the water.
 - **My own image:** any PNG, GIF, WebP or SVG, shown about 220px wide. You can give it any of
   the entrances above. For the web swing, grapple and zip line, the line attaches to the top
   centre of the image.

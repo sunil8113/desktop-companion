@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
+  <!-- Original cartoon sea guardian with a trident. The outstretched left hand holds the prop. -->
+  <defs>
+    <linearGradient id="suit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#25c2d4"/>
+      <stop offset="1" stop-color="#0b6a86"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe27a"/>
+      <stop offset="1" stop-color="#d49400"/>
+    </linearGradient>
+    <pattern id="scales" width="12" height="10" patternUnits="userSpaceOnUse">
+      <path d="M0 10 Q6 0 12 10" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="124" cy="292" rx="80" ry="7" fill="#000" opacity="0.2"/>
+
+  <!-- trident -->
+  <rect x="192" y="40" width="8" height="250" rx="3" fill="url(#gold)" stroke="#8a6200" stroke-width="2"/>
+  <g fill="url(#gold)" stroke="#8a6200" stroke-width="2" stroke-linejoin="round">
+    <path d="M178 46 L214 46 L214 52 L178 52 Z"/>
+    <path d="M178 50 C176 40 176 30 180 20 L184 30 C182 36 182 42 184 50 Z"/>
+    <path d="M214 50 C216 40 216 30 212 20 L208 30 C210 36 210 42 208 50 Z"/>
+    <path d="M193 46 L193 18 L189 18 L196 4 L203 18 L199 18 L199 46 Z"/>
+    <path d="M176 24 L180 12 L186 24 Z M206 24 L212 12 L216 24 Z"/>
+  </g>
+
+  <!-- legs & fin boots -->
+  <path d="M108 212 C106 234 102 252 100 268" fill="none" stroke="#0e1d47" stroke-width="27" stroke-linecap="round"/>
+  <path d="M108 212 C106 234 102 252 100 268" fill="none" stroke="#1d3577" stroke-width="21" stroke-linecap="round"/>
+  <path d="M132 212 C134 234 138 252 140 268" fill="none" stroke="#0e1d47" stroke-width="27" stroke-linecap="round"/>
+  <path d="M132 212 C134 234 138 252 140 268" fill="none" stroke="#1d3577" stroke-width="21" stroke-linecap="round"/>
+  <path d="M84 286 C84 274 92 266 102 266 C110 266 116 272 116 286 Z M74 280 L86 270 L88 284 Z" fill="url(#suit)" stroke="#063f52" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M124 286 C124 272 130 266 140 266 C150 266 156 274 156 286 Z M166 280 L154 270 L152 284 Z" fill="url(#suit)" stroke="#063f52" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- right arm, holding the trident -->
+  <path d="M150 142 C166 152 180 162 190 170" fill="none" stroke="#063f52" stroke-width="22" stroke-linecap="round"/>
+  <path d="M150 142 C166 152 180 162 190 170" fill="none" stroke="url(#suit)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M174 158 L184 166" stroke="url(#gold)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="196" cy="172" r="11" fill="#e9b58e" stroke="#b88660" stroke-width="2"/>
+
+  <!-- torso with scales -->
+  <path id="torso" d="M90 138 C90 126 102 120 120 120 C138 120 150 126 150 138 L146 202 C146 214 136 220 120 220 C104 220 94 214 94 202 Z" fill="url(#suit)" stroke="#063f52" stroke-width="3"/>
+  <path d="M90 138 C90 126 102 120 120 120 C138 120 150 126 150 138 L146 202 C146 214 136 220 120 220 C104 220 94 214 94 202 Z" fill="url(#scales)"/>
+  <!-- wave emblem -->
+  <path d="M100 168 C108 156 116 156 120 166 C124 176 132 176 140 164" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
+  <rect x="94" y="196" width="52" height="10" rx="4" fill="url(#gold)" stroke="#8a6200" stroke-width="2"/>
+  <path d="M112 198 C112 192 128 192 128 198 L120 208 Z" fill="#fff1e0" stroke="#b88660" stroke-width="1.5"/>
+  <!-- shoulder fins -->
+  <path d="M90 132 C78 126 70 130 64 138 C72 138 80 142 88 146 Z" fill="url(#suit)" stroke="#063f52" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M150 132 C162 126 170 130 176 138 C168 138 160 142 152 146 Z" fill="url(#suit)" stroke="#063f52" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- left arm, held out (holds the prop) -->
+  <path d="M92 142 C76 152 62 160 50 164" fill="none" stroke="#063f52" stroke-width="22" stroke-linecap="round"/>
+  <path d="M92 142 C76 152 62 160 50 164" fill="none" stroke="url(#suit)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M66 158 L54 163" stroke="url(#gold)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="44" cy="166" r="11" fill="#e9b58e" stroke="#b88660" stroke-width="2"/>
+
+  <!-- head -->
+  <circle cx="120" cy="88" r="40" fill="#e9b58e" stroke="#b88660" stroke-width="2"/>
+  <ellipse cx="96" cy="102" rx="7" ry="4.5" fill="#ff7aa8" opacity="0.35"/>
+  <ellipse cx="144" cy="102" rx="7" ry="4.5" fill="#ff7aa8" opacity="0.35"/>
+  <!-- hair, curling like a wave -->
+  <path d="M80 84 C76 56 94 40 120 40 C146 40 164 56 160 84 C156 74 150 68 142 66 C136 72 126 72 122 64 C114 70 104 70 100 64 C92 68 84 74 80 84 Z" fill="#123a4f" stroke="#08202d" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M104 46 C96 50 94 58 100 62 C104 56 110 56 112 60 M130 44 C140 46 146 54 142 60" fill="none" stroke="#2b7ea0" stroke-width="3" stroke-linecap="round"/>
+  <!-- seashell headband -->
+  <path d="M81 72 C98 62 142 62 159 72" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
+  <path d="M110 66 C110 54 130 54 130 66 L120 72 Z" fill="#fff1e0" stroke="#b88660" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M120 58 L120 70 M115 60 L118 70 M125 60 L122 70" stroke="#d9a07a" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- face -->
+  <ellipse cx="106" cy="92" rx="6.5" ry="8.5" fill="#ffffff"/>
+  <ellipse cx="134" cy="92" rx="6.5" ry="8.5" fill="#ffffff"/>
+  <circle cx="107" cy="94" r="4.5" fill="#0b6a86"/>
+  <circle cx="135" cy="94" r="4.5" fill="#0b6a86"/>
+  <circle cx="108.5" cy="91.5" r="1.6" fill="#ffffff"/>
+  <circle cx="136.5" cy="91.5" r="1.6" fill="#ffffff"/>
+  <path d="M106 110 Q120 120 134 110" fill="none" stroke="#7a2b1f" stroke-width="3" stroke-linecap="round"/>
+</svg>

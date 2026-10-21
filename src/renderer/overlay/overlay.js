@@ -643,6 +643,87 @@ async function zipOut(p) {
   zip.line.remove();
 }
 
+// ---------- sea guardian: rises on a water spout ----------
+//
+// A spout of water shoots up from the bottom of the screen carrying the character above its
+// spot, then lowers it down and drains away in a splash. The crest of the spout follows the
+// character's feet while it rides.
+
+const WATER_RGB = '120, 200, 255';
+const SPOUT_LIFT = 150; // how far above its spot the spout carries the character
+const SPOUT_RISE_MS = 720;
+const SPOUT_LOWER_MS = 420;
+const SPOUT_DRAIN_MS = 300;
+
+async function spoutIn(p) {
+  const box = character.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const below = window.innerHeight - box.top + 20; // fully below the screen
+  let dy = below;
+  let crest = () => box.bottom - 6 + dy;
+  const water = hero.spout(x, box.width * 0.7, () => crest());
+  if (p.soundEnabled) sfx.splash(1.3);
+  hero.droplets(x, window.innerHeight, 18);
+  rig.style.opacity = '1';
+  // Shoots up from below the screen to above the character's spot...
+  await frames(SPOUT_RISE_MS, (t) => {
+    const k = 1 - (1 - t / SPOUT_RISE_MS) ** 3;
+    dy = below + (-SPOUT_LIFT - below) * k;
+    rig.style.transform = `translateY(${dy}px)`;
+  });
+  // ...lowers it onto the spot...
+  await frames(SPOUT_LOWER_MS, (t) => {
+    const k = t / SPOUT_LOWER_MS;
+    dy = -SPOUT_LIFT * (1 - k * k * (3 - 2 * k));
+    rig.style.transform = `translateY(${dy}px)`;
+  });
+  rig.style.transform = '';
+  // ...and drains away in a splash.
+  const at = feet();
+  hero.droplets(at.x, at.y, 30, 1.4);
+  fx.ring(at.x, at.y, 130, 450, WATER_RGB);
+  if (p.soundEnabled) sfx.splash(0.6, 0.4);
+  const from = box.bottom - 6;
+  crest = () => from;
+  await frames(SPOUT_DRAIN_MS, (t) => {
+    const k = t / SPOUT_DRAIN_MS;
+    const y = from + (window.innerHeight + 10 - from) * k * k;
+    crest = () => y;
+  });
+  water.stop();
+}
+
+async function spoutOut(p) {
+  const box = character.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const below = window.innerHeight - box.top + 20;
+  const base = window.innerHeight + 10;
+  let dy = 0;
+  let crestY = base;
+  const water = hero.spout(x, box.width * 0.7, () => crestY);
+  if (p.soundEnabled) sfx.splash(1.1);
+  // The spout surges up under the character's feet and lifts it...
+  await frames(220, (t) => {
+    crestY = base + (box.bottom - 6 - base) * (t / 220);
+  });
+  await frames(300, (t) => {
+    const k = 1 - (1 - t / 300) ** 2;
+    dy = -SPOUT_LIFT * 0.6 * k;
+    crestY = box.bottom - 6 + dy;
+    rig.style.transform = `translateY(${dy}px)`;
+  });
+  // ...then sinks back down below the screen with it.
+  const top = dy;
+  await frames(520, (t) => {
+    const k = (t / 520) ** 2;
+    dy = top + (below - top) * k;
+    crestY = box.bottom - 6 + dy;
+    rig.style.transform = `translateY(${dy}px)`;
+  });
+  hero.droplets(x, window.innerHeight, 24, 1.3);
+  water.stop();
+}
+
 // ---------- entrance / exit ----------
 
 // Each entrance and the exit that goes with it, by the companion's `entrance`.
@@ -655,6 +736,7 @@ const ENTRANCES = {
   grapple: { in: grappleIn, out: grappleOut },
   portal: { in: portalIn, out: portalOut },
   zipline: { in: zipIn, out: zipOut },
+  spout: { in: spoutIn, out: spoutOut },
 };
 
 const entranceFor = (p) => ENTRANCES[p.entrance] || ENTRANCES.lightning;
