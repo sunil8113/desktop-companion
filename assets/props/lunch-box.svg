@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 112" width="70" height="112">
+  <!-- Stacked steel tiffin lunch box, carried by the handle at the top. -->
+  <defs>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8f9bb0"/>
+      <stop offset="0.3" stop-color="#f4f7fb"/>
+      <stop offset="0.55" stop-color="#c9d2df"/>
+      <stop offset="1" stop-color="#7d899e"/>
+    </linearGradient>
+  </defs>
+  <!-- handle and side clamps -->
+  <path d="M15 34 V18 C15 6 55 6 55 18 V34" fill="none" stroke="#5f6b80" stroke-width="7" stroke-linecap="round"/>
+  <path d="M15 34 V18 C15 6 55 6 55 18 V34" fill="none" stroke="url(#steel)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M7 36 V100 M63 36 V100" stroke="#5f6b80" stroke-width="4" stroke-linecap="round"/>
+  <!-- lid -->
+  <ellipse cx="35" cy="34" rx="27" ry="6" fill="url(#steel)" stroke="#5f6b80" stroke-width="2"/>
+  <circle cx="35" cy="31" r="3.5" fill="#c9d2df" stroke="#5f6b80" stroke-width="1.5"/>
+  <!-- three stacked containers -->
+  <g stroke="#5f6b80" stroke-width="2">
+    <path d="M9 36 H61 V56 C61 59 50 61 35 61 C20 61 9 59 9 56 Z" fill="url(#steel)"/>
+    <path d="M9 61 H61 V80 C61 83 50 85 35 85 C20 85 9 83 9 80 Z" fill="url(#steel)"/>
+    <path d="M9 85 H61 V103 C61 107 50 109 35 109 C20 109 9 107 9 103 Z" fill="url(#steel)"/>
+  </g>
+  <!-- rims and shine -->
+  <path d="M10 58 C20 61 50 61 60 58 M10 82 C20 85 50 85 60 82" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+  <path d="M19 40 V54 M19 65 V78 M19 89 V102" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+  <!-- steam: lunch is hot -->
+  <g fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85">
+    <path d="M26 27 C22 22 30 19 26 13"/>
+    <path d="M44 27 C40 22 48 19 44 13"/>
+  </g>
+</svg>

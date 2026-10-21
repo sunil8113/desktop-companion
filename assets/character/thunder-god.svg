@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 300" width="270" height="300">
+  <!-- Original cartoon Norse thunder god (default companion). Swap via Settings > Character. -->
+  <defs>
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4f7fb"/>
+      <stop offset="1" stop-color="#97a5ba"/>
+    </linearGradient>
+    <linearGradient id="hammer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d3dbe6"/>
+      <stop offset="1" stop-color="#6b7789"/>
+    </linearGradient>
+    <linearGradient id="cape" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e03a3a"/>
+      <stop offset="1" stop-color="#a51d1d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#a6e4ff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#3d95ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="122" cy="291" rx="78" ry="8" fill="#000" opacity="0.22"/>
+
+  <!-- cape -->
+  <path d="M84 180 C70 212 60 250 52 286 C82 294 162 294 192 286 C184 250 174 212 160 180 Z" fill="url(#cape)" stroke="#7d1010" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- long hair behind -->
+  <path d="M64 100 C52 142 60 188 84 208 L156 208 C180 188 188 142 176 100 Z" fill="#e8b33a" stroke="#b9862a" stroke-width="3"/>
+
+  <!-- legs & boots -->
+  <rect x="94" y="252" width="22" height="30" rx="6" fill="#2a1d14"/>
+  <rect x="126" y="252" width="22" height="30" rx="6" fill="#2a1d14"/>
+  <ellipse cx="103" cy="285" rx="15" ry="7" fill="#6b3f1f" stroke="#3e2410" stroke-width="2"/>
+  <ellipse cx="139" cy="285" rx="15" ry="7" fill="#6b3f1f" stroke="#3e2410" stroke-width="2"/>
+
+  <!-- tunic -->
+  <path d="M86 186 C86 176 96 170 120 170 C144 170 154 176 154 186 L160 250 C160 256 156 260 150 260 L92 260 C86 260 82 256 82 250 Z" fill="#1f3a7a" stroke="#0f2150" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M84 250 L158 250" stroke="#ffd23f" stroke-width="4"/>
+  <!-- chest emblem -->
+  <path d="M126 198 L112 218 L121 218 L114 236 L132 212 L123 212 L130 198 Z" fill="#ffd23f" stroke="#c99a00" stroke-width="2" stroke-linejoin="round"/>
+  <!-- belt -->
+  <rect x="83" y="234" width="76" height="11" rx="3" fill="#6b3f1f" stroke="#3e2410" stroke-width="2"/>
+  <rect x="113" y="232" width="16" height="15" rx="3" fill="#ffd23f" stroke="#c99a00" stroke-width="2"/>
+  <!-- cape clasps -->
+  <circle cx="90" cy="184" r="7" fill="#ffd23f" stroke="#c99a00" stroke-width="2"/>
+  <circle cx="150" cy="184" r="7" fill="#ffd23f" stroke="#c99a00" stroke-width="2"/>
+
+  <!-- left arm, resting -->
+  <path d="M88 192 C74 198 68 214 70 230" fill="none" stroke="#1f3a7a" stroke-width="18" stroke-linecap="round"/>
+  <path d="M69 222 L71 234" stroke="url(#steel)" stroke-width="20" stroke-linecap="round"/>
+  <circle cx="71" cy="242" r="10" fill="#f6c9a0" stroke="#c98f63" stroke-width="2"/>
+
+  <!-- head -->
+  <circle cx="120" cy="120" r="52" fill="#f6c9a0" stroke="#c98f63" stroke-width="2"/>
+  <ellipse cx="90" cy="142" rx="10" ry="6" fill="#ff7aa8" opacity="0.4"/>
+  <ellipse cx="150" cy="142" rx="10" ry="6" fill="#ff7aa8" opacity="0.4"/>
+  <!-- brows -->
+  <path d="M95 109 L114 113" stroke="#c9922a" stroke-width="5" stroke-linecap="round"/>
+  <path d="M145 109 L126 113" stroke="#c9922a" stroke-width="5" stroke-linecap="round"/>
+  <!-- eyes -->
+  <ellipse cx="104" cy="125" rx="9" ry="11" fill="#fff"/>
+  <ellipse cx="136" cy="125" rx="9" ry="11" fill="#fff"/>
+  <circle cx="106" cy="127" r="6.5" fill="#2f8cff"/>
+  <circle cx="138" cy="127" r="6.5" fill="#2f8cff"/>
+  <circle cx="106" cy="127" r="3.2" fill="#0b1a3a"/>
+  <circle cx="138" cy="127" r="3.2" fill="#0b1a3a"/>
+  <circle cx="108" cy="124" r="2" fill="#fff"/>
+  <circle cx="140" cy="124" r="2" fill="#fff"/>
+  <!-- nose -->
+  <path d="M120 133 Q126 139 119 141" fill="none" stroke="#c98f63" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- beard, mouth, moustache -->
+  <path d="M70 126 C72 168 96 194 120 198 C144 194 168 168 170 126 C160 146 142 154 120 154 C98 154 80 146 70 126 Z" fill="#f2c14e" stroke="#c9922a" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M110 162 Q120 174 130 162 Q120 167 110 162 Z" fill="#7a2b1f"/>
+  <path d="M99 155 C107 146 116 148 120 153 C124 148 133 146 141 155 C133 159 124 158 120 155 C116 158 107 159 99 155 Z" fill="#e8b33a" stroke="#c9922a" stroke-width="1.5"/>
+
+  <!-- helmet -->
+  <path d="M66 100 C66 58 92 44 120 44 C148 44 174 58 174 100 Z" fill="url(#steel)" stroke="#5f6e86" stroke-width="3"/>
+  <path d="M120 46 L120 92" stroke="#c5cfdd" stroke-width="6"/>
+  <rect x="62" y="90" width="116" height="14" rx="7" fill="#c5cfdd" stroke="#5f6e86" stroke-width="3"/>
+  <circle cx="120" cy="97" r="5" fill="#3d95ff" stroke="#1b4fd1" stroke-width="1.5"/>
+
+  <!-- wings -->
+  <g fill="#f7f9fc" stroke="#8494ad" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M66 96 C46 96 30 86 22 70 C38 76 52 80 68 82 Z"/>
+    <path d="M68 88 C48 80 34 62 30 40 C44 52 56 58 70 66 Z"/>
+    <path d="M70 80 C54 66 48 48 50 26 C60 42 68 52 76 60 Z"/>
+    <path d="M174 96 C194 96 210 86 218 70 C202 76 188 80 172 82 Z"/>
+    <path d="M172 88 C192 80 206 62 210 40 C196 52 184 58 170 66 Z"/>
+    <path d="M170 80 C186 66 192 48 190 26 C180 42 172 52 164 60 Z"/>
+  </g>
+
+  <!-- raised right arm -->
+  <path d="M152 190 C180 188 206 172 222 152" fill="none" stroke="#1f3a7a" stroke-width="18" stroke-linecap="round"/>
+  <path d="M206 168 L216 158" stroke="url(#steel)" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- hammer, crackling -->
+  <circle cx="226" cy="30" r="44" fill="url(#glow)"/>
+  <rect x="220" y="44" width="11" height="128" rx="4" fill="#7a4a26" stroke="#3e2410" stroke-width="2"/>
+  <g stroke="#3e2410" stroke-width="2" opacity="0.6">
+    <path d="M220 120 L231 126"/><path d="M220 132 L231 138"/><path d="M220 144 L231 150"/><path d="M220 156 L231 162"/>
+  </g>
+  <circle cx="225.5" cy="175" r="6" fill="#c5cfdd" stroke="#5f6e86" stroke-width="2"/>
+  <rect x="194" y="8" width="64" height="40" rx="6" fill="url(#hammer)" stroke="#3f4a5c" stroke-width="3"/>
+  <path d="M206 10 L206 46 M246 10 L246 46" stroke="#3f4a5c" stroke-width="2" opacity="0.6"/>
+  <g fill="none" stroke="#bfeaff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M190 18 L180 12 L184 22 L172 18"/>
+    <path d="M262 22 L268 14 L260 14 L266 4"/>
+    <path d="M200 56 L192 64 L200 64 L194 74"/>
+  </g>
+  <circle cx="225" cy="150" r="12" fill="#f6c9a0" stroke="#c98f63" stroke-width="2"/>
+</svg>
