@@ -1,19 +1,43 @@
 # Desk Companion
 
-A Windows tray app that reminds you to drink water, move, eat lunch and go home.
+A tray app for Windows and macOS that reminds you to drink water, move, eat lunch and go home.
 When a reminder fires, a character pops up at the bottom-right of your screen with a
 speech bubble and **Done** / **Snooze** buttons.
 
 ## Download
 
+### Windows
+
 1. Go to [Releases](https://github.com/sunil8113/desktop-companion/releases/latest) and download
-   `Desk Companion Setup x.x.x.exe`.
+   `Desk-Companion-Setup-x.x.x.exe`.
 2. Run it. The app isn't code-signed, so Windows may show **"Windows protected your PC"**.
    Click **More info → Run anyway**.
 3. Desk Companion starts in the system tray (check the **^** overflow area next to the clock).
    Left-click its icon to open Settings.
 
-To uninstall, use **Windows Settings → Apps → Installed apps → Desk Companion**.
+Updates install automatically. To uninstall, use **Windows Settings → Apps → Installed apps →
+Desk Companion**.
+
+### macOS
+
+1. Go to [Releases](https://github.com/sunil8113/desktop-companion/releases/latest) and download
+   `Desk-Companion-x.x.x-mac-arm64.dmg` for Apple Silicon Macs (M1 and later) or
+   `Desk-Companion-x.x.x-mac-x64.dmg` for Intel Macs. (Apple menu → **About This Mac** shows which.)
+2. Open the `.dmg` and drag **Desk Companion** into **Applications**.
+3. The app isn't notarized by Apple, so the first time you open it macOS blocks it. Go to
+   **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to
+   Desk Companion. If macOS instead says the app "is damaged", run this in Terminal once:
+   ```sh
+   xattr -dr com.apple.quarantine "/Applications/Desk Companion.app"
+   ```
+4. Desk Companion appears in the menu bar at the top of the screen (no Dock icon).
+   Click its icon to open Settings.
+
+On a Mac the app tells you when a new version is out and opens the download page; download
+the new `.dmg` and drag it into Applications to replace the old one. Your settings are kept.
+
+The Mac installers are built by GitHub Actions (`.github/workflows/mac.yml`) and attached to
+each release automatically, a few minutes after it's published.
 
 ## Run from source
 

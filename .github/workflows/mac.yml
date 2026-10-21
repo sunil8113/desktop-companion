@@ -1,0 +1,43 @@
+# Builds the macOS installers (Apple Silicon and Intel .dmg) on GitHub's Macs and attaches
+# them to the release. Runs when a release is published; can also be run by hand from the
+# Actions tab, which keeps the .dmg files as a downloadable artifact instead.
+name: Mac build
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  mac:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run dist:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false' # no signing certificate; ad-hoc sign only
+
+      - name: Attach to the release
+        if: github.event_name == 'release'
+        run: gh release upload "${{ github.event.release.tag_name }}" dist/*.dmg --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Keep the build (manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mac-dmg
+          path: dist/*.dmg

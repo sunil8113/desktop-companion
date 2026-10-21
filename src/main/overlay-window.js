@@ -61,6 +61,8 @@ class OverlayPresenter extends EventEmitter {
     this.win = win;
     harden(win);
     win.setAlwaysOnTop(true, 'screen-saver');
+    // On a Mac, also show over full-screen apps and on whichever Space is active.
+    if (process.platform === 'darwin') win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     // Clicks pass through to the desktop except over the character/bubble (renderer toggles this).
     win.setIgnoreMouseEvents(true, { forward: true });
 

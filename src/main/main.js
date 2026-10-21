@@ -1,4 +1,4 @@
-const { app, ipcMain, dialog, shell, powerMonitor } = require('electron');
+const { app, ipcMain, dialog, shell, powerMonitor, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -153,8 +153,16 @@ function registerIpc() {
 }
 
 function init() {
-  // Must match build.appId so Windows notifications (including update notices) show.
-  app.setAppUserModelId('com.sunil8113.desktopcompanion');
+  if (process.platform === 'win32') {
+    // Must match build.appId so Windows notifications (including update notices) show.
+    app.setAppUserModelId('com.sunil8113.desktopcompanion');
+  }
+  if (process.platform === 'darwin') {
+    // A menu-bar app: no Dock icon (the installed app also sets LSUIElement). The menu is
+    // never shown, but without its Edit roles copy and paste don't work in Settings.
+    app.dock?.hide();
+    Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }]));
+  }
   seedCompanions();
   const cfg = config.load();
 
