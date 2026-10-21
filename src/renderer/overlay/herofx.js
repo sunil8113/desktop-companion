@@ -1,5 +1,5 @@
 // Canvas effects for the other entrances: a speed trail, jet flames, a magic portal, an
-// arrow and a rope. Exposes window.HeroFx.create(fx), where fx is the canvas engine from
+// arrow and a rope, and a water spout with splashing droplets. Exposes window.HeroFx.create(fx), where fx is the canvas engine from
 // lightning.js. Solid parts are drawn normally (not additive) so they show on light screens.
 (function () {
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -256,7 +256,91 @@
       };
     }
 
-    return { trail, flames, portal, arrow, line };
+    // A column of water rising from the bottom of the screen at x, up to top() (a function,
+    // so it can follow whatever rides it), with a foaming crest. Call stop() to remove it.
+    function spout(x, width, top) {
+      const state = { active: true, stop: () => (state.active = false) };
+      fx.add((c, t) => {
+        if (!state.active) return false;
+        const base = window.innerHeight + 10;
+        const y = top();
+        if (base - y < 2) return true;
+        const half = width / 2;
+        const wob = (k, phase) => Math.sin(t / 70 + k * 9 + phase) * 6;
+        c.globalCompositeOperation = 'source-over';
+        // Body: slightly wider at the base, wavy sides.
+        c.beginPath();
+        c.moveTo(x - half * 1.25, base);
+        for (let k = 1; k >= 0; k -= 0.1) c.lineTo(x - half * (0.8 + 0.45 * k) + wob(k, 0), y + (base - y) * k);
+        for (let k = 0; k <= 1; k += 0.1) c.lineTo(x + half * (0.8 + 0.45 * k) + wob(k, 2), y + (base - y) * k);
+        c.closePath();
+        const g = c.createLinearGradient(0, y, 0, base);
+        g.addColorStop(0, 'rgba(160, 230, 255, 0.92)');
+        g.addColorStop(1, 'rgba(20, 100, 190, 0.85)');
+        c.fillStyle = g;
+        c.fill();
+        c.lineWidth = 2.5;
+        c.strokeStyle = 'rgba(10, 60, 130, 0.6)';
+        c.stroke();
+        // Streaks of light running up the column.
+        c.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+        c.lineWidth = 3;
+        c.lineCap = 'round';
+        for (let i = 0; i < 4; i++) {
+          const sx = x + (i - 1.5) * half * 0.45;
+          const sy = base - ((t * 0.9 + i * 97) % Math.max(1, base - y));
+          c.beginPath();
+          c.moveTo(sx, sy);
+          c.lineTo(sx, Math.min(base, sy + 26));
+          c.stroke();
+        }
+        // Foam crest.
+        c.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        c.strokeStyle = 'rgba(10, 60, 130, 0.45)';
+        c.lineWidth = 2;
+        for (let i = -2; i <= 2; i++) {
+          c.beginPath();
+          c.arc(x + i * half * 0.42, y + 4 + Math.abs(i) * 3 + wob(i, 4) * 0.4, half * 0.3, 0, Math.PI * 2);
+          c.fill();
+          c.stroke();
+        }
+        c.globalCompositeOperation = 'lighter';
+        return true;
+      });
+      return state;
+    }
+
+    // Water droplets thrown up from (x, y) that fall back under gravity.
+    function droplets(x, y, count = 30, spread = 1) {
+      const drops = Array.from({ length: count }, () => ({
+        vx: rand(-0.55, 0.55) * spread,
+        vy: rand(-1.1, -0.35),
+        r: rand(2.5, 6),
+        life: rand(500, 900),
+      }));
+      const GRAVITY = 0.003;
+      return fx.add((c, t) => {
+        let alive = false;
+        c.globalCompositeOperation = 'source-over';
+        c.lineWidth = 1.5;
+        c.strokeStyle = 'rgba(10, 60, 130, 0.5)';
+        for (const d of drops) {
+          if (t > d.life) continue;
+          alive = true;
+          c.globalAlpha = 1 - t / d.life;
+          c.fillStyle = 'rgba(140, 215, 255, 0.95)';
+          c.beginPath();
+          c.arc(x + d.vx * t, y + d.vy * t + 0.5 * GRAVITY * t * t, d.r, 0, Math.PI * 2);
+          c.fill();
+          c.stroke();
+        }
+        c.globalAlpha = 1;
+        c.globalCompositeOperation = 'lighter';
+        return alive;
+      });
+    }
+
+    return { trail, flames, portal, arrow, line, spout, droplets };
   }
 
   window.HeroFx = { create };

@@ -1,5 +1,5 @@
 // Sound effects, synthesised with Web Audio so no audio files are needed.
-// Exposes window.Sfx: thunder(src?), thwip(), whoosh(), zap(), jet(), chime(), thunk().
+// Exposes window.Sfx: thunder(src?), thwip(), whoosh(), zap(), jet(), chime(), thunk(), splash().
 (function () {
   let ac = null;
 
@@ -274,5 +274,44 @@
     click.stop(t0 + 0.05);
   }
 
-  window.Sfx = { thunder, thwip, whoosh, zap, jet, chime, thunk };
+  // Water: a gushing rush of filtered noise and a few rising bubble blips.
+  function splash(duration = 0.9, volume = 0.55) {
+    const ctx = audio();
+    const t0 = ctx.currentTime + 0.01;
+    const master = output(ctx, volume);
+
+    const rush = ctx.createBufferSource();
+    rush.buffer = noise(ctx, duration, false);
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 0.8;
+    bp.frequency.setValueAtTime(600, t0);
+    bp.frequency.exponentialRampToValueAtTime(2000, t0 + duration * 0.3);
+    bp.frequency.exponentialRampToValueAtTime(500, t0 + duration);
+    const rushGain = ctx.createGain();
+    rushGain.gain.setValueAtTime(0.0001, t0);
+    rushGain.gain.exponentialRampToValueAtTime(0.9, t0 + 0.05);
+    rushGain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+    rush.connect(bp).connect(rushGain).connect(master);
+    rush.start(t0);
+    rush.stop(t0 + duration);
+
+    for (let i = 0; i < 6; i++) {
+      const at = t0 + 0.05 + Math.random() * duration * 0.7;
+      const blip = ctx.createOscillator();
+      blip.type = 'sine';
+      const f = 400 + Math.random() * 500;
+      blip.frequency.setValueAtTime(f, at);
+      blip.frequency.exponentialRampToValueAtTime(f * 2.2, at + 0.06);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(0.25, at + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, at + 0.07);
+      blip.connect(g).connect(master);
+      blip.start(at);
+      blip.stop(at + 0.08);
+    }
+  }
+
+  window.Sfx = { thunder, thwip, whoosh, zap, jet, chime, thunk, splash };
 })();

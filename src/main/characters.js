@@ -2,7 +2,8 @@
 //   entrance: one of ENTRANCES: 'lightning' (bolt strike + landing), 'swing' (swings in on
 //             a web), 'dash' (runs in on a speed trail), 'jet' (flies down on jet boots),
 //             'swoop' (flies in and lands), 'grapple' (drops in on a line), 'portal'
-//             (steps out of a magic portal) or 'zipline' (slides down a line from an arrow)
+//             (steps out of a magic portal), 'zipline' (slides down a line from an arrow)
+//             or 'spout' (rises on a water spout)
 //   grip:     where the web / line attaches, as a fraction of the image (swing, grapple, zipline)
 //   hold:     where a held prop (e.g. the water bottle) goes, as a fraction of the image
 //
@@ -79,9 +80,17 @@ const BUILT_IN = [
     grip: { x: 0.508, y: 0.04 },
     hold: { x: 0.183, y: 0.56 },
   },
+  {
+    id: 'sea-guardian',
+    name: 'Sea guardian (rises on a water spout)',
+    file: path.join(paths.characters, 'sea-guardian.svg'),
+    entrance: 'spout',
+    grip: { x: 0.5, y: 0.02 },
+    hold: { x: 0.183, y: 0.553 },
+  },
 ];
 
-const ENTRANCES = ['lightning', 'swing', 'dash', 'jet', 'swoop', 'grapple', 'portal', 'zipline'];
+const ENTRANCES = ['lightning', 'swing', 'dash', 'jet', 'swoop', 'grapple', 'portal', 'zipline', 'spout'];
 
 // Best guesses for an image we know nothing about: hang it from the top centre and
 // put a prop at its left side, next to the speech bubble.
