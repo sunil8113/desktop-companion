@@ -312,7 +312,352 @@ async function swingOut(p) {
   trail.active = false;
 }
 
+const hero = window.HeroFx.create(fx);
+
+// The character's grip point (p.grip, e.g. a raised hand), relative to #rig and on screen.
+function gripPoint(p) {
+  const box = character.getBoundingClientRect();
+  const rigBox = rig.getBoundingClientRect();
+  const gx = box.left - rigBox.left + box.width * p.grip.x;
+  const gy = box.top - rigBox.top + box.height * p.grip.y;
+  return { box, gx, gy, x: rigBox.left + gx, y: rigBox.top + gy };
+}
+
+// Turn from facing right (mirrored, as when running or flying in from the left) to facing
+// the bubble, with a little squash.
+function turnAround() {
+  rig.style.transform = '';
+  return rig.animate(
+    [{ transform: 'scaleX(-1)' }, { transform: 'scale(-0.15, 1.06)', offset: 0.45 }, { transform: 'none' }],
+    { duration: 240, easing: 'ease-out' },
+  ).finished;
+}
+
+// ---------- speedster: dashes in on a lightning trail ----------
+
+const SPEED_RGB = '255, 176, 20';
+const DASH_IN_MS = 460;
+const DASH_OUT_MS = 380;
+
+async function dashIn(p) {
+  const box = character.getBoundingClientRect();
+  const run = box.right + 120; // start fully off the left edge
+  const trailY = box.top + box.height * 0.55;
+  const trail = hero.trail(SPEED_RGB);
+  if (p.soundEnabled) {
+    sfx.zap();
+    sfx.whoosh(0.5, 0.6);
+  }
+  rig.style.opacity = '1';
+  // Runs in facing right, leaning into it, and brakes hard...
+  await frames(DASH_IN_MS, (t) => {
+    const k = t / DASH_IN_MS;
+    const dx = -run * (1 - k) ** 3;
+    rig.style.transform = `translateX(${dx}px) scaleX(-1) skewX(${16 * (1 - k)}deg)`;
+    trail.push(box.left + box.width / 2 + dx, trailY);
+  });
+  trail.stop();
+  // ...skids to a stop in a shower of sparks and turns to face you.
+  const at = feet();
+  fx.sparks(at.x - 30, at.y, 26, SPEED_RGB);
+  fx.ring(at.x, at.y, 110, 380, SPEED_RGB);
+  await turnAround();
+}
+
+async function dashOut(p) {
+  const box = character.getBoundingClientRect();
+  const run = box.right + 120;
+  const trailY = box.top + box.height * 0.55;
+  const at = feet();
+  fx.sparks(at.x + 30, at.y, 18, SPEED_RGB);
+  if (p.soundEnabled) {
+    sfx.zap();
+    sfx.whoosh(0.45, 0.6);
+  }
+  const trail = hero.trail(SPEED_RGB);
+  await frames(DASH_OUT_MS, (t) => {
+    const k = t / DASH_OUT_MS;
+    const dx = -run * k ** 3;
+    rig.style.transform = `translateX(${dx}px) skewX(${16 * Math.min(1, k * 3)}deg)`;
+    trail.push(box.left + box.width / 2 + dx, trailY);
+  });
+  trail.stop();
+}
+
+// ---------- armored hero: flies down on jet boots and lands on the thrusters ----------
+
+const JET_RGB = '255, 170, 70';
+const JET_IN_MS = 950;
+const JET_OUT_MS = 620;
+
+// Where the flames come out: under each boot.
+const nozzles = (box, dy) => [0.43, 0.57].map((f) => ({ x: box.left + box.width * f, y: box.bottom - 10 + dy }));
+
+async function jetIn(p) {
+  const box = character.getBoundingClientRect();
+  const drop = box.bottom + 80;
+  let dy = -drop;
+  const jets = hero.flames(() => nozzles(box, dy));
+  if (p.soundEnabled) sfx.jet(1.4);
+  rig.style.opacity = '1';
+  // Descends fast, then brakes on full thrust...
+  await frames(JET_IN_MS, (t) => {
+    const k = t / JET_IN_MS;
+    dy = -drop * (1 - k) ** 2.4;
+    jets.power = 0.5 + 0.5 * k;
+    rig.style.transform = `translateY(${dy}px)`;
+  });
+  rig.style.transform = '';
+  dy = 0;
+  // ...touches down in a blast, and throttles down.
+  const at = feet();
+  fx.ring(at.x, at.y, 150, 450, JET_RGB);
+  fx.sparks(at.x, at.y, 26, JET_RGB);
+  shake(stage, 4);
+  rig.animate(
+    [{ transform: 'none' }, { transform: 'scale(1.1, 0.88)', offset: 0.3 }, { transform: 'none' }],
+    { duration: 380, easing: 'ease-out' },
+  );
+  await frames(300, (t) => {
+    jets.power = 1 - t / 300;
+  });
+  jets.stop();
+}
+
+async function jetOut(p) {
+  const box = character.getBoundingClientRect();
+  const rise = box.bottom + 100;
+  let dy = 0;
+  const jets = hero.flames(() => nozzles(box, dy));
+  if (p.soundEnabled) sfx.jet(1.0);
+  // Spool up, then blast off.
+  await frames(220, (t) => {
+    jets.power = 0.2 + (0.8 * t) / 220;
+  });
+  const at = feet();
+  fx.ring(at.x, at.y, 130, 400, JET_RGB);
+  fx.sparks(at.x, at.y, 16, JET_RGB);
+  await frames(JET_OUT_MS, (t) => {
+    const k = t / JET_OUT_MS;
+    dy = -rise * k * k;
+    rig.style.transform = `translateY(${dy}px)`;
+  });
+  jets.stop();
+}
+
+// ---------- caped flyer: swoops down and lands ----------
+
+const SWOOP_IN_MS = 1050;
+const SWOOP_OUT_MS = 720;
+
+const bezier = (a, b, c, k) => (1 - k) * (1 - k) * a + 2 * (1 - k) * k * b + k * k * c;
+
+async function swoopIn(p) {
+  const box = character.getBoundingClientRect();
+  // Dives from above the top-left of the screen and levels out just above the ground.
+  const p0 = { x: -(box.right + 60), y: -(box.bottom + 60) };
+  const p1 = { x: -box.width * 2.4, y: 0 };
+  rig.style.transformOrigin = '50% 60%';
+  rig.style.opacity = '1';
+  if (p.soundEnabled) sfx.whoosh(1.1, 0.6);
+  await frames(SWOOP_IN_MS, (t) => {
+    const k = 1 - (1 - t / SWOOP_IN_MS) ** 2;
+    const dx = bezier(p0.x, p1.x, 0, k);
+    const dy = bezier(p0.y, p1.y, 0, k);
+    const tilt = 55 * (1 - k) ** 1.5; // leaning into the flight, upright for the landing
+    const flutter = 3 * Math.sin(t / 45);
+    rig.style.transform = `translate(${dx}px, ${dy}px) rotate(${tilt}deg) scaleX(-1) skewY(${flutter}deg)`;
+  });
+  rig.style.transformOrigin = '';
+  const at = feet();
+  fx.ring(at.x, at.y, 120, 420, '255, 255, 255');
+  await turnAround();
+}
+
+async function swoopOut(p) {
+  const box = character.getBoundingClientRect();
+  // Crouch, then take off up and away to the left.
+  await rig.animate([{ transform: 'none' }, { transform: 'scale(1.1, 0.86)', offset: 0.7 }, { transform: 'none' }], { duration: 160, easing: 'ease-out' }).finished;
+  const p1 = { x: -box.width * 1.5, y: 0 };
+  const p2 = { x: -(box.right + 80), y: -(box.bottom + 160) };
+  if (p.soundEnabled) sfx.whoosh(0.8, 0.6);
+  rig.style.transformOrigin = '50% 60%';
+  await frames(SWOOP_OUT_MS, (t) => {
+    const k = (t / SWOOP_OUT_MS) ** 2;
+    const dx = bezier(0, p1.x, p2.x, k);
+    const dy = bezier(0, p1.y, p2.y, k);
+    rig.style.transform = `translate(${dx}px, ${dy}px) rotate(${-50 * Math.sqrt(k)}deg) skewY(${3 * Math.sin(t / 45)}deg)`;
+  });
+}
+
+// ---------- shadow hero: drops in on a grapple line ----------
+
+const GRAPPLE_FALL_MS = 420;
+const GRAPPLE_BOUNCE_MS = 800;
+const GRAPPLE_OUT_MS = 560;
+
+let grapple = null; // { length } while hanging from the line
+
+function grapplePose(dy) {
+  rig.style.transform = `translateY(${dy}px)`;
+  rope.style.height = `${Math.max(0, grapple.length + dy)}px`;
+}
+
+async function grappleIn(p) {
+  stage.classList.add('swing', 'grapple');
+  const g = gripPoint(p);
+  grapple = { length: g.y + 30 }; // line anchored 30px above the screen
+  rig.style.transformOrigin = `${g.gx}px ${g.gy}px`;
+  actor.style.transformOrigin = `${g.gx}px ${g.gy - grapple.length}px`;
+  const drop = g.box.bottom + 40;
+
+  // Free fall from above the screen...
+  grapplePose(-drop);
+  rig.style.opacity = '1';
+  if (p.soundEnabled) sfx.whoosh(0.5, 0.5);
+  await frames(GRAPPLE_FALL_MS, (t) => {
+    const k = t / GRAPPLE_FALL_MS;
+    grapplePose(-drop * (1 - k * k));
+  });
+  // ...until the line catches and bounces.
+  if (p.soundEnabled) sfx.thunk(0.5);
+  await frames(GRAPPLE_BOUNCE_MS, (t) => {
+    const s = t / 1000;
+    grapplePose(26 * Math.exp(-5 * s) * Math.sin(2 * Math.PI * 2.2 * s));
+  });
+  grapplePose(0);
+  actor.classList.add('sway');
+}
+
+async function grappleOut(p) {
+  const rise = character.getBoundingClientRect().bottom + 80;
+  if (p.soundEnabled) setTimeout(() => sfx.whoosh(0.5, 0.5), 80);
+  // A small dip, then yanked up by the line.
+  await frames(GRAPPLE_OUT_MS, (t) => {
+    const k = t / GRAPPLE_OUT_MS;
+    grapplePose(k < 0.2 ? 12 * Math.sin((Math.PI * k) / 0.2) : -rise * ((k - 0.2) / 0.8) ** 2);
+  });
+}
+
+// ---------- sorcerer: steps out of a magic portal ----------
+
+function openPortal(p) {
+  const box = character.getBoundingClientRect();
+  rig.style.transformOrigin = '50% 55%';
+  if (p.soundEnabled) sfx.chime();
+  return hero.portal(box.left + box.width / 2, box.top + box.height * 0.55, box.width * 0.62, box.height * 0.56);
+}
+
+async function portalIn(p) {
+  const gate = openPortal(p);
+  await gate.opened;
+  rig.style.opacity = '1';
+  await rig.animate(
+    [
+      { transform: 'scale(0.2) rotate(-14deg)', opacity: 0, filter: 'brightness(2.5)' },
+      { transform: 'none', opacity: 1, filter: 'none' },
+    ],
+    { duration: 520, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1.15)', fill: 'backwards' },
+  ).finished;
+  await wait(200);
+  gate.close();
+}
+
+async function portalOut(p) {
+  const gate = openPortal(p);
+  await gate.opened;
+  await rig.animate(
+    [
+      { transform: 'none', opacity: 1, filter: 'none' },
+      { transform: 'scale(0.15) rotate(16deg)', opacity: 0, filter: 'brightness(2.5)' },
+    ],
+    { duration: 420, easing: 'ease-in', fill: 'forwards' },
+  ).finished;
+  await gate.close();
+}
+
+// ---------- archer: shoots a line to the top of the screen and zips down it ----------
+//
+// The line runs from the ground beside the character, up through its grip point, to an
+// arrow stuck in the top edge of the screen. The character drops onto the line at the
+// arrow and slides down to its spot.
+
+const ZIP_DROP_MS = 200;
+const ZIP_SLIDE_MS = 720;
+
+let zip = null;
+
+function zipPose(x, y, tilt) {
+  rig.style.transform = `translate(${x - zip.g.x}px, ${y - zip.g.y}px) rotate(${tilt}deg)`;
+}
+
+async function zipIn(p) {
+  const g = gripPoint(p);
+  rig.style.transformOrigin = `${g.gx}px ${g.gy}px`;
+  const top = { x: clamp(g.x - 320, 40, g.x - 80), y: 14 };
+  const dx = g.x - top.x;
+  const dy = g.y - top.y;
+  const ground = { x: g.x + (dx / dy) * (g.box.bottom - g.y), y: g.box.bottom }; // line extended to the floor
+  zip = { g, top, ground };
+
+  // Fire the arrow up from the ground, trailing the line.
+  if (p.soundEnabled) sfx.whoosh(0.3, 0.4);
+  zip.arrow = hero.arrow(ground, top);
+  zip.line = hero.line(() => ground, () => zip.arrow.tip());
+  await zip.arrow.hit;
+  if (p.soundEnabled) sfx.thunk();
+
+  // Drop onto the line from above the screen, then slide down it.
+  const above = -(g.box.bottom - g.y) - 20;
+  zipPose(top.x, above, 0);
+  rig.style.opacity = '1';
+  await frames(ZIP_DROP_MS, (t) => {
+    const k = (t / ZIP_DROP_MS) ** 2;
+    zipPose(top.x, above + (top.y - above) * k, 0);
+  });
+  if (p.soundEnabled) sfx.whoosh(0.8, 0.5);
+  await frames(ZIP_SLIDE_MS, (t) => {
+    const k = t / ZIP_SLIDE_MS;
+    const e = k < 0.7 ? 0.85 * (k / 0.7) ** 2 : 1 - 0.15 * (1 - (k - 0.7) / 0.3) ** 2; // speed up, then brake
+    zipPose(top.x + dx * e, top.y + dy * e, 16 * Math.sin(Math.PI * k));
+  });
+  rig.style.transform = '';
+  const at = feet();
+  fx.ring(at.x, at.y, 100, 380, '230, 210, 170');
+}
+
+async function zipOut(p) {
+  const { g, top } = zip;
+  const above = -(g.box.bottom - g.y) - 20;
+  if (p.soundEnabled) sfx.whoosh(0.6, 0.5);
+  // Pulled back up the line and off the top of the screen.
+  await frames(520, (t) => {
+    const k = (t / 520) ** 2;
+    zipPose(g.x + (top.x - g.x) * k, g.y + (top.y - g.y) * k, -12 * Math.sin(Math.PI * k));
+  });
+  await frames(160, (t) => {
+    const k = t / 160;
+    zipPose(top.x, top.y + (above - top.y) * k, 0);
+  });
+  zip.arrow.remove();
+  zip.line.remove();
+}
+
 // ---------- entrance / exit ----------
+
+// Each entrance and the exit that goes with it, by the companion's `entrance`.
+const ENTRANCES = {
+  lightning: { in: strikeIn, out: leapOut },
+  swing: { in: swingIn, out: swingOut },
+  dash: { in: dashIn, out: dashOut },
+  jet: { in: jetIn, out: jetOut },
+  swoop: { in: swoopIn, out: swoopOut },
+  grapple: { in: grappleIn, out: grappleOut },
+  portal: { in: portalIn, out: portalOut },
+  zipline: { in: zipIn, out: zipOut },
+};
+
+const entranceFor = (p) => ENTRANCES[p.entrance] || ENTRANCES.lightning;
 
 async function playEntrance(p) {
   await useKeyedCharacter(p);
@@ -331,8 +676,7 @@ async function playEntrance(p) {
       el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 });
     }
   } else {
-    if (p.entrance === 'swing') await swingIn(p);
-    else await strikeIn(p);
+    await entranceFor(p).in(p);
     await wait(120);
     await popBubble();
   }
@@ -367,8 +711,7 @@ async function playExit(action) {
     handOverProp();
     await wait(260);
   }
-  if (swing) await swingOut(payload);
-  else await leapOut();
+  await entranceFor(payload).out(payload);
 }
 
 async function leave(action) {

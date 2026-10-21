@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
+  <!-- Original cartoon armored hero with jet boots. The outstretched left hand holds the prop. -->
+  <defs>
+    <linearGradient id="armor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9fb0c8"/>
+      <stop offset="1" stop-color="#46546d"/>
+    </linearGradient>
+    <linearGradient id="visor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d6fbff"/>
+      <stop offset="1" stop-color="#2fd3f5"/>
+    </linearGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#7beeff"/>
+      <stop offset="1" stop-color="#1aa7d6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="120" cy="292" rx="70" ry="7" fill="#000" opacity="0.22"/>
+
+  <!-- legs -->
+  <rect x="94" y="212" width="22" height="52" rx="8" fill="url(#armor)" stroke="#1f2a3c" stroke-width="3"/>
+  <rect x="124" y="212" width="22" height="52" rx="8" fill="url(#armor)" stroke="#1f2a3c" stroke-width="3"/>
+  <path d="M98 236 L112 236 M128 236 L142 236" stroke="#2fd3f5" stroke-width="3" stroke-linecap="round"/>
+  <!-- jet boots -->
+  <path d="M88 262 L120 262 L116 284 L92 284 Z" fill="#33405a" stroke="#1f2a3c" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M120 262 L152 262 L148 284 L124 284 Z" fill="#33405a" stroke="#1f2a3c" stroke-width="3" stroke-linejoin="round"/>
+  <ellipse cx="104" cy="286" rx="9" ry="3.5" fill="#7beeff" stroke="#1f2a3c" stroke-width="2"/>
+  <ellipse cx="136" cy="286" rx="9" ry="3.5" fill="#7beeff" stroke="#1f2a3c" stroke-width="2"/>
+
+  <!-- right arm, down -->
+  <path d="M158 146 C168 168 172 186 170 204" fill="none" stroke="#1f2a3c" stroke-width="24" stroke-linecap="round"/>
+  <path d="M158 146 C168 168 172 186 170 204" fill="none" stroke="url(#armor)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="170" cy="212" r="12" fill="#33405a" stroke="#1f2a3c" stroke-width="3"/>
+
+  <!-- torso -->
+  <path d="M84 140 C84 126 100 118 120 118 C140 118 156 126 156 140 L150 198 C148 212 136 220 120 220 C104 220 92 212 90 198 Z" fill="url(#armor)" stroke="#1f2a3c" stroke-width="3"/>
+  <path d="M104 186 L136 186 M106 200 L134 200" stroke="#1f2a3c" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M120 172 L120 212" stroke="#1f2a3c" stroke-width="2.5" opacity="0.5"/>
+  <!-- chest core -->
+  <circle cx="120" cy="154" r="22" fill="url(#core)"/>
+  <polygon points="120,141 131,147.5 131,160.5 120,167 109,160.5 109,147.5" fill="#bff6ff" stroke="#1aa7d6" stroke-width="2.5"/>
+  <!-- shoulder pads -->
+  <ellipse cx="84" cy="138" rx="18" ry="14" fill="#5d6d88" stroke="#1f2a3c" stroke-width="3"/>
+  <ellipse cx="156" cy="138" rx="18" ry="14" fill="#5d6d88" stroke="#1f2a3c" stroke-width="3"/>
+
+  <!-- left arm, held out (holds the prop) -->
+  <path d="M82 146 C68 158 56 170 46 176" fill="none" stroke="#1f2a3c" stroke-width="24" stroke-linecap="round"/>
+  <path d="M82 146 C68 158 56 170 46 176" fill="none" stroke="url(#armor)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="40" cy="180" r="12" fill="#33405a" stroke="#1f2a3c" stroke-width="3"/>
+  <circle cx="40" cy="180" r="4" fill="#7beeff"/>
+
+  <!-- helmet -->
+  <path d="M80 70 C80 40 98 28 120 28 C142 28 160 40 160 70 L158 96 C156 110 140 118 120 118 C100 118 84 110 82 96 Z" fill="url(#armor)" stroke="#1f2a3c" stroke-width="3"/>
+  <path d="M120 30 L120 58" stroke="#c9d5e6" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="80" cy="78" r="9" fill="#33405a" stroke="#1f2a3c" stroke-width="2.5"/>
+  <circle cx="160" cy="78" r="9" fill="#33405a" stroke="#1f2a3c" stroke-width="2.5"/>
+  <circle cx="80" cy="78" r="3.5" fill="#7beeff"/>
+  <circle cx="160" cy="78" r="3.5" fill="#7beeff"/>
+  <!-- visor with happy eyes -->
+  <path d="M88 64 L152 64 L148 88 L92 88 Z" fill="url(#visor)" stroke="#1aa7d6" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M100 80 Q106 72 112 80 M128 80 Q134 72 140 80" fill="none" stroke="#0b3a55" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- mouth grille -->
+  <path d="M108 100 L132 100 M110 106 L130 106" stroke="#1f2a3c" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+</svg>

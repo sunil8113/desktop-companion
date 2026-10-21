@@ -1,5 +1,5 @@
 // Sound effects, synthesised with Web Audio so no audio files are needed.
-// Exposes window.Sfx: thunder(src?), thwip(), whoosh().
+// Exposes window.Sfx: thunder(src?), thwip(), whoosh(), zap(), jet(), chime(), thunk().
 (function () {
   let ac = null;
 
@@ -156,5 +156,123 @@
     air.stop(t0 + duration);
   }
 
-  window.Sfx = { thunder, thwip, whoosh };
+  // Electric crackle for the speedster: buzzing bright noise bursts over a rising zap.
+  function zap(volume = 0.45) {
+    const ctx = audio();
+    const t0 = ctx.currentTime + 0.01;
+    const master = output(ctx, volume);
+
+    const fizz = ctx.createBufferSource();
+    fizz.buffer = noise(ctx, 0.4, false);
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 2500;
+    const fizzGain = ctx.createGain();
+    fizzGain.gain.setValueAtTime(0.0001, t0);
+    for (let i = 0; i < 8; i++) {
+      const at = t0 + i * 0.045;
+      fizzGain.gain.setValueAtTime(0.0001, at);
+      fizzGain.gain.exponentialRampToValueAtTime(0.9 - i * 0.09, at + 0.006);
+      fizzGain.gain.exponentialRampToValueAtTime(0.0001, at + 0.04);
+    }
+    fizz.connect(hp).connect(fizzGain).connect(master);
+    fizz.start(t0);
+    fizz.stop(t0 + 0.4);
+
+    const buzz = ctx.createOscillator();
+    buzz.type = 'sawtooth';
+    buzz.frequency.setValueAtTime(180, t0);
+    buzz.frequency.exponentialRampToValueAtTime(900, t0 + 0.3);
+    const buzzGain = ctx.createGain();
+    buzzGain.gain.setValueAtTime(0.0001, t0);
+    buzzGain.gain.exponentialRampToValueAtTime(0.18, t0 + 0.02);
+    buzzGain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.34);
+    buzz.connect(buzzGain).connect(master);
+    buzz.start(t0);
+    buzz.stop(t0 + 0.36);
+  }
+
+  // Jet thrusters: a roar of rumbly and hissing noise that swells and dies away.
+  function jet(duration = 1.2, volume = 0.6) {
+    const ctx = audio();
+    const t0 = ctx.currentTime + 0.01;
+    const master = output(ctx, volume);
+    for (const [brown, type, freq, level] of [
+      [true, 'lowpass', 500, 1.0],
+      [false, 'bandpass', 2200, 0.35],
+    ]) {
+      const src = ctx.createBufferSource();
+      src.buffer = noise(ctx, duration, brown);
+      const filter = ctx.createBiquadFilter();
+      filter.type = type;
+      filter.frequency.value = freq;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(level, t0 + 0.12);
+      gain.gain.setValueAtTime(level, t0 + duration * 0.6);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+      src.connect(filter).connect(gain).connect(master);
+      src.start(t0);
+      src.stop(t0 + duration);
+    }
+  }
+
+  // Magic portal: a shimmering chord with tremolo that rings out.
+  function chime(volume = 0.4) {
+    const ctx = audio();
+    const t0 = ctx.currentTime + 0.01;
+    const master = output(ctx, volume);
+    const tremolo = ctx.createOscillator();
+    tremolo.frequency.value = 9;
+    const depth = ctx.createGain();
+    depth.gain.value = 0.25;
+    const shimmer = ctx.createGain();
+    shimmer.gain.value = 0.75; // wobbles between 0.5 and 1
+    tremolo.connect(depth).connect(shimmer.gain);
+    shimmer.connect(master);
+    tremolo.start(t0);
+    tremolo.stop(t0 + 1.6);
+    [523.25, 783.99, 1046.5, 1567.98].forEach((freq, i) => {
+      const at = t0 + i * 0.06;
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(0.5 / (i + 1), at + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, at + 1.4);
+      osc.connect(gain).connect(shimmer);
+      osc.start(at);
+      osc.stop(at + 1.5);
+    });
+  }
+
+  // An arrow (or grapple) biting into something: a woody knock with a click.
+  function thunk(volume = 0.7) {
+    const ctx = audio();
+    const t0 = ctx.currentTime + 0.01;
+    const master = output(ctx, volume);
+    const knock = ctx.createOscillator();
+    knock.type = 'triangle';
+    knock.frequency.setValueAtTime(220, t0);
+    knock.frequency.exponentialRampToValueAtTime(70, t0 + 0.12);
+    const knockGain = ctx.createGain();
+    knockGain.gain.setValueAtTime(0.0001, t0);
+    knockGain.gain.exponentialRampToValueAtTime(1.0, t0 + 0.004);
+    knockGain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.18);
+    knock.connect(knockGain).connect(master);
+    knock.start(t0);
+    knock.stop(t0 + 0.2);
+
+    const click = ctx.createBufferSource();
+    click.buffer = noise(ctx, 0.05, false);
+    const clickGain = ctx.createGain();
+    clickGain.gain.setValueAtTime(0.5, t0);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.03);
+    click.connect(clickGain).connect(master);
+    click.start(t0);
+    click.stop(t0 + 0.05);
+  }
+
+  window.Sfx = { thunder, thwip, whoosh, zap, jet, chime, thunk };
 })();

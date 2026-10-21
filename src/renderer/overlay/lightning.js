@@ -145,7 +145,8 @@
       });
     }
 
-    function sparks(x, y, count = 34) {
+    // rgb: the colour as "r, g, b" (default: electric blue).
+    function sparks(x, y, count = 34, rgb = '190, 230, 255') {
       const parts = Array.from({ length: count }, () => ({
         vx: rand(-0.7, 0.7),
         vy: rand(-1.0, -0.25),
@@ -161,7 +162,7 @@
           const px = x + p.vx * t;
           const py = y + p.vy * t + 0.5 * GRAVITY * t * t;
           const vy = p.vy + GRAVITY * t;
-          c.strokeStyle = `rgba(190, 230, 255, ${1 - t / p.life})`;
+          c.strokeStyle = `rgba(${rgb}, ${1 - t / p.life})`;
           c.beginPath();
           c.moveTo(px, py);
           c.lineTo(px - p.vx * 14, py - vy * 14);
@@ -171,12 +172,12 @@
       });
     }
 
-    function ring(x, y, maxRadius = 150, duration = 450) {
+    function ring(x, y, maxRadius = 150, duration = 450, rgb = '140, 205, 255') {
       return add((c, t) => {
         if (t > duration) return false;
         const k = t / duration;
         const r = maxRadius * (1 - (1 - k) * (1 - k)); // ease-out
-        c.strokeStyle = `rgba(140, 205, 255, ${0.8 * (1 - k)})`;
+        c.strokeStyle = `rgba(${rgb}, ${0.8 * (1 - k)})`;
         c.lineWidth = 4 * (1 - k) + 1;
         c.beginPath();
         c.ellipse(x, y, r, r * 0.22, 0, 0, Math.PI * 2);
