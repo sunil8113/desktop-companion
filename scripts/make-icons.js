@@ -97,7 +97,8 @@ function render(size) {
   return encodePng(size, out);
 }
 
-const targets = { 'tray.png': 16, 'tray@1.5x.png': 24, 'tray@2x.png': 32, 'icon.png': 256 };
+// icon-mac.png: macOS needs at least 512x512 to build its .icns.
+const targets = { 'tray.png': 16, 'tray@1.5x.png': 24, 'tray@2x.png': 32, 'icon.png': 256, 'icon-mac.png': 1024 };
 for (const [name, size] of Object.entries(targets)) {
   fs.writeFileSync(path.join(OUT_DIR, name), render(size));
   console.log(`wrote assets/${name} (${size}x${size})`);
