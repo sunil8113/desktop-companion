@@ -1,7 +1,7 @@
 {
   "name": "desk-companion",
   "productName": "Desk Companion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tray companion that reminds you to drink water, move, eat and go home.",
   "main": "src/main/main.js",
   "author": "sunil8113",
@@ -13,7 +13,7 @@
     "demo": "electron . --demo",
     "icons": "node scripts/make-icons.js",
     "cutout": "node scripts/cutout.js",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win --publish never"
   },
   "build": {
     "appId": "com.sunil8113.desktopcompanion",
@@ -25,6 +25,11 @@
     ],
     "directories": {
       "output": "dist"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "sunil8113",
+      "repo": "desktop-companion"
     },
     "win": {
       "target": "nsis",
@@ -41,5 +46,8 @@
   "devDependencies": {
     "electron": "^44.7.2",
     "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
   }
 }

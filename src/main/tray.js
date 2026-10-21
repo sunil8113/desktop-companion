@@ -13,7 +13,7 @@ function formatDue(dueAt) {
   return sameDay ? `at ${time}` : `${d.toLocaleDateString([], { weekday: 'short' })} ${time}`;
 }
 
-function createTray({ scheduler, onOpenSettings, onTest, onQuit }) {
+function createTray({ scheduler, onOpenSettings, onTest, onCheckUpdates, onQuit }) {
   const tray = new Tray(nativeImage.createFromPath(paths.trayIcon));
 
   function pausedLabel() {
@@ -51,6 +51,7 @@ function createTray({ scheduler, onOpenSettings, onTest, onQuit }) {
           },
       { label: 'Show a test reminder', click: onTest },
       { label: 'Settings…', click: onOpenSettings },
+      { label: 'Check for updates…', click: onCheckUpdates },
       { type: 'separator' },
       { label: 'Quit', click: onQuit },
     ]);
