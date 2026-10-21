@@ -60,16 +60,16 @@ Pick a companion in **Settings → Character**:
   then leaps away when you click Done or Snooze.
 - **Web-slinger:** swings in from the top of the screen on a web and hangs at the
   bottom-right, then swings back up when you're done.
-- **Speedster:** dashes in from the left on a crackling lightning trail, skids to a stop and
+- **Lightning speedster:** dashes in from the left on a crackling lightning trail, skids to a stop and
   turns to face you, then races off.
-- **Armored hero:** flies down on jet boots and touches down in a thruster blast, then
+- **Iron-suit hero:** red and gold armor; flies down on jet boots and touches down in a thruster blast, then
   blasts off upwards.
-- **Caped flyer:** swoops down from the top-left of the sky and lands, then flies up and away.
-- **Shadow hero:** drops in on a grapple line and bounces to a stop, then is yanked back up.
-- **Star wizard:** steps out of a swirling magic portal, then vanishes back into one.
-- **Archer:** fires an arrow into the top of the screen trailing a line, drops onto it and
+- **Sky hero:** red suit and blue cape; swoops down from the top-left of the sky and lands, then flies up and away.
+- **Night hero:** drops in on a grapple line and bounces to a stop, then is yanked back up.
+- **Mystic wizard:** steps out of a swirling magic portal, then vanishes back into one.
+- **Hooded archer:** purple and black; fires an arrow into the top of the screen trailing a line, drops onto it and
   zips down, then gets pulled back up it.
-- **Sea guardian:** rides a water spout up from the bottom of the screen, is lowered onto
+- **Ocean king:** rides a water spout up from the bottom of the screen, is lowered onto
   his spot as it drains away in a splash, then sinks back down into the water.
 - **My own image:** any PNG, GIF, WebP or SVG, shown about 220px wide. You can give it any of
   the entrances above. For the web swing, grapple and zip line, the line attaches to the top

@@ -18,7 +18,7 @@ const paths = require('./paths');
 const BUILT_IN = [
   {
     id: 'thunder-god',
-    name: 'Thunder god (arrives on a lightning strike)',
+    name: 'Thunder god (hammer, lightning strike)',
     file: path.join(paths.characters, 'thunder-god.svg'),
     entrance: 'lightning',
     grip: { x: 0.5, y: 0.02 },
@@ -34,7 +34,7 @@ const BUILT_IN = [
   },
   {
     id: 'speedster',
-    name: 'Speedster (dashes in on a lightning trail)',
+    name: 'Lightning speedster (dashes in on a lightning trail)',
     file: path.join(paths.characters, 'speedster.svg'),
     entrance: 'dash',
     grip: { x: 0.5, y: 0.02 },
@@ -42,7 +42,7 @@ const BUILT_IN = [
   },
   {
     id: 'armored-hero',
-    name: 'Armored hero (flies down on jet boots)',
+    name: 'Iron-suit hero (red & gold armor, jet boots)',
     file: path.join(paths.characters, 'armored-hero.svg'),
     entrance: 'jet',
     grip: { x: 0.5, y: 0.02 },
@@ -50,7 +50,7 @@ const BUILT_IN = [
   },
   {
     id: 'caped-flyer',
-    name: 'Caped flyer (swoops down from the sky)',
+    name: 'Sky hero (cape, swoops down from the sky)',
     file: path.join(paths.characters, 'caped-flyer.svg'),
     entrance: 'swoop',
     grip: { x: 0.5, y: 0.02 },
@@ -58,7 +58,7 @@ const BUILT_IN = [
   },
   {
     id: 'shadow-hero',
-    name: 'Shadow hero (drops in on a grapple line)',
+    name: 'Night hero (hood & cape, grapple line)',
     file: path.join(paths.characters, 'shadow-hero.svg'),
     entrance: 'grapple',
     grip: { x: 0.5, y: 0.03 },
@@ -66,7 +66,7 @@ const BUILT_IN = [
   },
   {
     id: 'sorcerer',
-    name: 'Star wizard (steps out of a magic portal)',
+    name: 'Mystic wizard (steps out of a magic portal)',
     file: path.join(paths.characters, 'sorcerer.svg'),
     entrance: 'portal',
     grip: { x: 0.5, y: 0.02 },
@@ -74,7 +74,7 @@ const BUILT_IN = [
   },
   {
     id: 'archer',
-    name: 'Archer (zips down a line from an arrow)',
+    name: 'Hooded archer (bow & arrow, zip line)',
     file: path.join(paths.characters, 'archer.svg'),
     entrance: 'zipline',
     grip: { x: 0.508, y: 0.04 },
@@ -82,7 +82,7 @@ const BUILT_IN = [
   },
   {
     id: 'sea-guardian',
-    name: 'Sea guardian (rises on a water spout)',
+    name: 'Ocean king (trident, rises on a water spout)',
     file: path.join(paths.characters, 'sea-guardian.svg'),
     entrance: 'spout',
     grip: { x: 0.5, y: 0.02 },
