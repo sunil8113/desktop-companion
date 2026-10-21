@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data:; media-src 'self' file: data:; style-src 'self'; script-src 'self'">
+  <title>Desk Companion Reminder</title>
+  <link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+  <!-- Lightning, sparks and shockwave are drawn on #fx; #flash is the screen flash. -->
+  <canvas id="fx"></canvas>
+  <div id="flash"></div>
+
+  <div id="stage">
+    <section id="bubble" class="interactive" role="alertdialog" aria-labelledby="title" aria-describedby="message">
+      <span id="tag" hidden></span>
+      <h1 id="title"></h1>
+      <p id="message"></p>
+      <div class="actions">
+        <button id="done" type="button">Done</button>
+        <button id="snooze" type="button">Snooze 10 min</button>
+      </div>
+    </section>
+    <div id="actor">
+      <div id="rig">
+        <div id="rope"></div>
+        <img id="character" class="character interactive" alt="" draggable="false">
+        <canvas id="character-keyed" class="character keyed interactive" hidden></canvas>
+        <img id="prop" alt="" draggable="false" hidden>
+      </div>
+    </div>
+  </div>
+
+  <script src="lightning.js"></script>
+  <script src="sfx.js"></script>
+  <script src="webfx.js"></script>
+  <script src="keyer.js"></script>
+  <script src="overlay.js"></script>
+</body>
+</html>

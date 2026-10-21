@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 280" width="240" height="280">
+  <!-- Placeholder companion. Replace via Settings > Character, or swap this file. -->
+  <defs>
+    <radialGradient id="body" cx="38%" cy="32%" r="72%">
+      <stop offset="0" stop-color="#9fe2ff"/>
+      <stop offset="0.55" stop-color="#2f8cff"/>
+      <stop offset="1" stop-color="#1b4fd1"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="120" cy="268" rx="72" ry="9" fill="#000" opacity="0.22"/>
+  <path d="M128 14 L102 62 L119 62 L108 96 L144 48 L127 48 L140 14 Z" fill="#ffe14a" stroke="#c99a00" stroke-width="3" stroke-linejoin="round"/>
+  <ellipse cx="38" cy="196" rx="16" ry="24" fill="#2a74f0" stroke="#123a9c" stroke-width="4" transform="rotate(20 38 196)"/>
+  <ellipse cx="202" cy="196" rx="16" ry="24" fill="#2a74f0" stroke="#123a9c" stroke-width="4" transform="rotate(-20 202 196)"/>
+  <ellipse cx="88" cy="258" rx="24" ry="11" fill="#1b4fd1" stroke="#123a9c" stroke-width="4"/>
+  <ellipse cx="152" cy="258" rx="24" ry="11" fill="#1b4fd1" stroke="#123a9c" stroke-width="4"/>
+  <path d="M120 82 C186 82 210 136 210 184 C210 234 172 258 120 258 C68 258 30 234 30 184 C30 136 54 82 120 82 Z" fill="url(#body)" stroke="#123a9c" stroke-width="4"/>
+  <ellipse cx="92" cy="164" rx="17" ry="21" fill="#fff"/>
+  <ellipse cx="148" cy="164" rx="17" ry="21" fill="#fff"/>
+  <circle cx="96" cy="168" r="9" fill="#0b1a3a"/>
+  <circle cx="152" cy="168" r="9" fill="#0b1a3a"/>
+  <circle cx="99" cy="164" r="3" fill="#fff"/>
+  <circle cx="155" cy="164" r="3" fill="#fff"/>
+  <ellipse cx="72" cy="196" rx="11" ry="6" fill="#ff7aa8" opacity="0.55"/>
+  <ellipse cx="168" cy="196" rx="11" ry="6" fill="#ff7aa8" opacity="0.55"/>
+  <path d="M104 200 Q120 216 136 200" fill="none" stroke="#0b1a3a" stroke-width="5" stroke-linecap="round"/>
+</svg>

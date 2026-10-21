@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data:; style-src 'self'; script-src 'self'">
+  <title>Desk Companion Settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <header class="app-header">
+    <img src="../../../assets/icon.png" alt="" width="36" height="36">
+    <div>
+      <h1>Desk Companion</h1>
+      <p>Reminders to drink water, move, eat and go home.</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="section-head">
+        <h2>Reminders</h2>
+        <div class="buttons">
+          <button type="button" class="secondary" id="add-interval">+ Repeating</button>
+          <button type="button" class="secondary" id="add-daily">+ Daily time</button>
+        </div>
+      </div>
+      <div id="reminders"></div>
+      <p id="empty" class="empty" hidden>No reminders yet. Add one above.</p>
+    </section>
+
+    <section>
+      <h2>General</h2>
+      <div class="panel">
+        <label class="setting">
+          <span class="label">Snooze length</span>
+          <span class="inline"><input type="number" id="snooze-minutes" min="1" max="240"> minutes</span>
+        </label>
+        <div class="setting">
+          <label class="check"><input type="checkbox" id="wh-enabled"> Only show repeating reminders during work hours</label>
+          <span class="inline">
+            <input type="time" id="wh-start" aria-label="Work hours start"> to
+            <input type="time" id="wh-end" aria-label="Work hours end">
+          </span>
+        </div>
+        <label class="setting">
+          <span class="label">Show reminders on</span>
+          <select id="display">
+            <option value="primary">Main display</option>
+            <option value="cursor">Display with the mouse</option>
+          </select>
+        </label>
+        <label class="setting check"><input type="checkbox" id="sound"> Play sound effects (thunder, web swing)</label>
+        <label class="setting check"><input type="checkbox" id="login"> Start Desk Companion when I sign in to Windows</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>Character</h2>
+      <div class="panel character">
+        <div class="preview"><img id="char-preview" alt="Character preview"></div>
+        <div class="character-info">
+          <label class="frame-option">
+            <span class="label">Companion</span>
+            <select id="char-choice"></select>
+          </label>
+          <p class="hint">This is the default. Each reminder can pick its own companion and what it holds (water bottle, lunch box) on its card above.</p>
+          <div id="custom-options" hidden>
+            <p id="char-path" class="muted"></p>
+            <div class="buttons frame-option">
+              <button type="button" class="secondary" id="pick-char">Choose image…</button>
+            </div>
+            <p class="hint">PNG, GIF, WebP or SVG with a transparent background works best. About 220px wide is shown on screen. For the web swing, the web attaches to the top centre of the image.</p>
+            <label class="frame-option">
+              <span class="label">Entrance</span>
+              <select id="char-entrance">
+                <option value="lightning">Lightning strike</option>
+                <option value="swing">Swing in on a web</option>
+              </select>
+            </label>
+            <label class="frame-option">
+              <span class="label">Background</span>
+              <select id="char-style">
+                <option value="plain">Keep as is (image is already transparent)</option>
+                <option value="remove-dark">Remove dark background (clips shot on black)</option>
+                <option value="frame">Show in a glowing frame</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span id="status" role="status"></span>
+    <button type="button" class="link" id="open-folder" title="Show settings.json in Explorer">Settings file</button>
+    <button type="button" class="ghost" id="reset-defaults">Reset to defaults</button>
+    <button type="button" class="secondary" id="revert" disabled>Revert</button>
+    <button type="button" class="primary" id="save" disabled>Save</button>
+  </footer>
+
+  <template id="reminder-tpl">
+    <article class="card">
+      <header>
+        <label class="switch" title="Enabled"><input type="checkbox" data-field="enabled"><span></span></label>
+        <input class="title-input" data-field="title" maxlength="60" placeholder="Title" aria-label="Title">
+        <span class="badge" data-role="badge"></span>
+        <button type="button" class="ghost small" data-action="test">Test</button>
+        <button type="button" class="ghost small danger" data-action="delete" title="Delete reminder" aria-label="Delete reminder">✕</button>
+      </header>
+      <label class="field">
+        <span>Message</span>
+        <textarea data-field="message" rows="2" maxlength="280" placeholder="What should your companion say?"></textarea>
+      </label>
+      <div class="row">
+        <label class="field when-interval">
+          <span>Every</span>
+          <span class="inline"><input type="number" min="1" max="1440" data-field="intervalMinutes"> minutes</span>
+        </label>
+        <label class="field when-daily">
+          <span>At</span>
+          <input type="time" data-field="time">
+        </label>
+        <div class="field">
+          <span>Days</span>
+          <div class="days" data-role="days"></div>
+        </div>
+      </div>
+      <div class="row">
+        <label class="field">
+          <span>Companion</span>
+          <select data-field="companion" data-role="companion"></select>
+        </label>
+        <label class="field">
+          <span>Holds</span>
+          <select data-field="prop">
+            <option value="auto">Automatic (from the title)</option>
+            <option value="water-bottle">Water bottle</option>
+            <option value="lunch-box">Lunch box (tiffin)</option>
+            <option value="none">Nothing</option>
+          </select>
+        </label>
+      </div>
+    </article>
+  </template>
+
+  <script src="settings.js"></script>
+</body>
+</html>
