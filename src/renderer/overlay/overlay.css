@@ -171,6 +171,11 @@ html, body {
   pointer-events: none;
 }
 #stage.swing #rope { display: block; }
+/* Grapple line: a dark cable instead of a white web. */
+#stage.grapple #rope {
+  background: linear-gradient(to top, #3a3f55, #1b1d2b);
+  box-shadow: 0 0 0 1px rgba(200, 210, 230, 0.35);
+}
 
 /* Held prop (water bottle, lunch box), placed at the character's hand. --prop-anchor is
    the vertical point the hand grips (set per prop from JS). */

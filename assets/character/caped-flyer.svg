@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
+  <!-- Original cartoon caped flyer. Fist on hip; the outstretched left hand holds the prop. -->
+  <defs>
+    <linearGradient id="suit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22b892"/>
+      <stop offset="1" stop-color="#0d6b55"/>
+    </linearGradient>
+    <linearGradient id="cape" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b9c4d6"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe27a"/>
+      <stop offset="1" stop-color="#e0a800"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="128" cy="292" rx="86" ry="7" fill="#000" opacity="0.2"/>
+
+  <!-- cape, flowing to the right -->
+  <path d="M90 134 C72 180 72 238 88 286 C138 296 198 286 234 258 C214 226 194 186 150 134 Z" fill="url(#cape)" stroke="#7d8aa1" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M170 170 C186 200 200 226 216 248 M140 176 C148 214 156 248 160 282" fill="none" stroke="#9aa6bb" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- legs & boots -->
+  <path d="M108 212 C106 234 102 252 100 270" fill="none" stroke="#08443a" stroke-width="27" stroke-linecap="round"/>
+  <path d="M108 212 C106 234 102 252 100 270" fill="none" stroke="url(#suit)" stroke-width="21" stroke-linecap="round"/>
+  <path d="M132 212 C134 234 138 252 140 270" fill="none" stroke="#08443a" stroke-width="27" stroke-linecap="round"/>
+  <path d="M132 212 C134 234 138 252 140 270" fill="none" stroke="url(#suit)" stroke-width="21" stroke-linecap="round"/>
+  <ellipse cx="98" cy="282" rx="16" ry="9" fill="url(#gold)" stroke="#a07800" stroke-width="2.5"/>
+  <ellipse cx="142" cy="282" rx="16" ry="9" fill="url(#gold)" stroke="#a07800" stroke-width="2.5"/>
+
+  <!-- right arm, fist on hip -->
+  <path d="M150 142 C168 156 172 176 158 190" fill="none" stroke="#08443a" stroke-width="22" stroke-linecap="round"/>
+  <path d="M150 142 C168 156 172 176 158 190" fill="none" stroke="url(#suit)" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="152" cy="194" r="11" fill="url(#gold)" stroke="#a07800" stroke-width="2.5"/>
+
+  <!-- torso -->
+  <path d="M90 138 C90 126 102 120 120 120 C138 120 150 126 150 138 L146 202 C146 214 136 220 120 220 C104 220 94 214 94 202 Z" fill="url(#suit)" stroke="#08443a" stroke-width="3"/>
+  <!-- chest emblem: gold wings -->
+  <path d="M120 176 L96 156 C104 154 110 156 114 160 L120 166 L126 160 C130 156 136 154 144 156 Z" fill="url(#gold)" stroke="#a07800" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M104 160 L112 166 M136 160 L128 166" stroke="#a07800" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="94" y="196" width="52" height="10" rx="4" fill="url(#gold)" stroke="#a07800" stroke-width="2"/>
+  <!-- cape clasps -->
+  <circle cx="94" cy="136" r="7" fill="url(#gold)" stroke="#a07800" stroke-width="2"/>
+  <circle cx="146" cy="136" r="7" fill="url(#gold)" stroke="#a07800" stroke-width="2"/>
+
+  <!-- left arm, held out (holds the prop) -->
+  <path d="M92 142 C76 152 62 160 50 164" fill="none" stroke="#08443a" stroke-width="22" stroke-linecap="round"/>
+  <path d="M92 142 C76 152 62 160 50 164" fill="none" stroke="url(#suit)" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="42" cy="166" r="11" fill="url(#gold)" stroke="#a07800" stroke-width="2.5"/>
+
+  <!-- head -->
+  <circle cx="120" cy="88" r="42" fill="#f1c19a" stroke="#c48a5e" stroke-width="2"/>
+  <ellipse cx="94" cy="102" rx="8" ry="5" fill="#ff7aa8" opacity="0.35"/>
+  <ellipse cx="146" cy="102" rx="8" ry="5" fill="#ff7aa8" opacity="0.35"/>
+  <!-- hair -->
+  <path d="M78 80 C76 52 96 40 120 40 C146 40 166 54 162 84 C154 70 140 62 122 64 C112 56 100 58 96 66 C90 66 82 72 78 80 Z" fill="#2a2135" stroke="#140f1c" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M118 46 C108 52 108 62 116 66" fill="none" stroke="#3f3450" stroke-width="3" stroke-linecap="round"/>
+  <!-- headband -->
+  <path d="M79 76 C98 68 142 68 161 76 L160 84 C140 76 100 76 80 84 Z" fill="url(#gold)" stroke="#a07800" stroke-width="2"/>
+  <circle cx="120" cy="73" r="5" fill="#22b892" stroke="#08443a" stroke-width="1.5"/>
+  <!-- eyes, smile -->
+  <ellipse cx="106" cy="94" rx="7" ry="9" fill="#ffffff"/>
+  <ellipse cx="134" cy="94" rx="7" ry="9" fill="#ffffff"/>
+  <circle cx="107" cy="96" r="4.5" fill="#1d4f8f"/>
+  <circle cx="135" cy="96" r="4.5" fill="#1d4f8f"/>
+  <circle cx="108.5" cy="93.5" r="1.6" fill="#ffffff"/>
+  <circle cx="136.5" cy="93.5" r="1.6" fill="#ffffff"/>
+  <path d="M106 112 Q120 122 134 112" fill="none" stroke="#7a2b1f" stroke-width="3" stroke-linecap="round"/>
+</svg>

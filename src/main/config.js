@@ -2,12 +2,12 @@
 const { app } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const { ENTRANCES } = require('./characters');
 
 const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6]; // Date#getDay(): 0 = Sunday
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 const ID_RE = /^[\w-]{1,64}$/;
 const CHARACTER_STYLES = ['plain', 'remove-dark', 'frame'];
-const ENTRANCES = ['lightning', 'swing'];
 const PROPS = ['auto', 'none', 'water-bottle', 'lunch-box'];
 
 const DEFAULTS = {
@@ -58,7 +58,7 @@ const DEFAULTS = {
   // How to show the character: 'plain' (image as is), 'remove-dark' (key out a dark
   // background, for clips shot on black) or 'frame' (rounded card with a glow).
   characterStyle: 'plain',
-  customEntrance: 'lightning', // how a custom image arrives: 'lightning' or 'swing'
+  customEntrance: 'lightning', // how a custom image arrives: one of ENTRANCES (characters.js)
   soundEnabled: true,
   launchAtLogin: false,
   overlayDisplay: 'primary', // 'primary' or 'cursor' (the display the mouse is on)
