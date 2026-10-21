@@ -28,7 +28,8 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "artifactName": "Desk-Companion-Setup-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
