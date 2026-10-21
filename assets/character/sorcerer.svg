@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="240" height="300">
-  <!-- Original cartoon star wizard with a crystal staff. The open left hand holds the prop. -->
+  <!-- Original cartoon star wizard with a red cape and a crystal staff. The open left hand holds the prop. -->
   <defs>
     <linearGradient id="robe" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#7d52d6"/>
@@ -9,6 +9,10 @@
       <stop offset="0" stop-color="#6a42c4"/>
       <stop offset="1" stop-color="#2e1764"/>
     </linearGradient>
+    <linearGradient id="cape" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e2342c"/>
+      <stop offset="1" stop-color="#9a1414"/>
+    </linearGradient>
     <radialGradient id="crystal-glow" cx="50%" cy="50%" r="50%">
       <stop offset="0" stop-color="#d9fbff" stop-opacity="0.95"/>
       <stop offset="1" stop-color="#36c7f0" stop-opacity="0"/>
@@ -16,7 +20,11 @@
   </defs>
 
   <!-- ground shadow -->
-  <ellipse cx="124" cy="292" rx="78" ry="7" fill="#000" opacity="0.22"/>
+  <ellipse cx="124" cy="292" rx="84" ry="7" fill="#000" opacity="0.22"/>
+
+  <!-- red cape, behind the robe and staff -->
+  <path d="M90 138 C68 186 46 238 34 288 L206 288 C194 238 172 186 150 138 Z" fill="url(#cape)" stroke="#5e0b0b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M84 170 C70 210 58 248 50 282 M156 170 C170 210 182 248 190 282" fill="none" stroke="#7a1212" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
 
   <!-- staff -->
   <circle cx="198" cy="44" r="30" fill="url(#crystal-glow)"/>
