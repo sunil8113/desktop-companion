@@ -9,6 +9,7 @@ const { Scheduler } = require('./scheduler');
 const { OverlayPresenter } = require('./overlay-window');
 const { createTray } = require('./tray');
 const settingsWindow = require('./settings-window');
+const { initUpdater, checkForUpdates } = require('./updater');
 
 let scheduler;
 let presenter;
@@ -86,6 +87,22 @@ function applyLoginItem(cfg) {
   });
 }
 
+// Copy companions bundled into this build into the user's companions folder, without
+// overwriting files that are already there. Updates replace the app but not that folder.
+function seedCompanions() {
+  if (paths.localCharacters === paths.bundledCharacters) return;
+  try {
+    fs.mkdirSync(paths.localCharacters, { recursive: true });
+    if (!fs.existsSync(paths.bundledCharacters)) return;
+    for (const name of fs.readdirSync(paths.bundledCharacters)) {
+      const target = path.join(paths.localCharacters, name);
+      if (!fs.existsSync(target)) fs.writeFileSync(target, fs.readFileSync(path.join(paths.bundledCharacters, name)));
+    }
+  } catch (err) {
+    console.warn('[characters] could not set up companions folder:', err.message);
+  }
+}
+
 function showTestReminder(reminder) {
   const r = reminder || config.get().reminders.find((x) => x.enabled) || config.normalizeReminder({ title: 'Hello!', message: 'This is a test reminder.' });
   presenter.enqueue(r, { isTest: true });
@@ -136,7 +153,9 @@ function registerIpc() {
 }
 
 function init() {
-  app.setAppUserModelId('com.descomp.deskcompanion');
+  // Must match build.appId so Windows notifications (including update notices) show.
+  app.setAppUserModelId('com.sunil8113.desktopcompanion');
+  seedCompanions();
   const cfg = config.load();
 
   scheduler = new Scheduler();
@@ -170,8 +189,10 @@ function init() {
     scheduler,
     onOpenSettings: () => settingsWindow.open(),
     onTest: () => showTestReminder(),
+    onCheckUpdates: checkForUpdates,
     onQuit: () => app.quit(),
   });
+  initUpdater();
 
   powerMonitor.on('resume', () => scheduler.resetIntervals());
   powerMonitor.on('unlock-screen', () => scheduler.resetIntervals());
