@@ -1,10 +1,21 @@
-﻿# Desk Companion
+# Desk Companion
 
 A Windows tray app that reminds you to drink water, move, eat lunch and go home.
 When a reminder fires, a character pops up at the bottom-right of your screen with a
 speech bubble and **Done** / **Snooze** buttons.
 
-## Run
+## Download
+
+1. Go to [Releases](https://github.com/sunil8113/desktop-companion/releases/latest) and download
+   `Desk Companion Setup x.x.x.exe`.
+2. Run it. The app isn't code-signed, so Windows may show **"Windows protected your PC"**.
+   Click **More info → Run anyway**.
+3. Desk Companion starts in the system tray (check the **^** overflow area next to the clock).
+   Left-click its icon to open Settings.
+
+To uninstall, use **Windows Settings → Apps → Installed apps → Desk Companion**.
+
+## Run from source
 
 ```sh
 npm install
@@ -44,7 +55,7 @@ the Settings footer. The file is validated on load, and if it's corrupt it's ren
 
 ## Using your own character
 
-Pick a companion in **Settings â†’ Character**:
+Pick a companion in **Settings → Character**:
 - **Thunder god** (default): arrives on a lightning strike with a screen flash and thunder,
   then leaps away when you click Done or Snooze.
 - **Web-slinger:** swings in from the top of the screen on a web and hangs at the
@@ -78,13 +89,13 @@ For water reminders the companion holds out a water bottle, and hands it to you 
 **Done**. The art is in `assets/character/` and `assets/props/`.
 
 If your image or GIF has no transparent background, change **Background** under
-**Settings â†’ Character**:
+**Settings → Character**:
 - **Remove dark background:** for clips shot on black. Dark pixels become transparent, so only
   the bright parts (lightning, glowing weapons, highlights) float over the desktop.
 - **Show in a glowing frame:** shows the image as a rounded card with a blue glow.
 
 Reminders show on the main display by default. To show them on whichever display the mouse
-is on instead, change **Settings â†’ General â†’ Show reminders on**.
+is on instead, change **Settings → General → Show reminders on**.
 
 ## Animation and sound
 
@@ -109,8 +120,8 @@ screen (with the motion trail) while the web splat fades. The code is in
 
 - The thunder is synthesized with Web Audio. To use a recording instead, put `thunder.mp3`,
   `thunder.ogg` or `thunder.wav` in `assets/sounds/`. To turn the sound off, use
-  **Settings â†’ General**.
-- If Windows **Settings â†’ Accessibility â†’ Visual effects â†’ Animation effects** is off, the
+  **Settings → General**.
+- If Windows **Settings → Accessibility → Visual effects → Animation effects** is off, the
   bolt, flash and motion are skipped and the character and bubble simply fade in.
 - The code is in `src/renderer/overlay/`: `lightning.js` (canvas effects), `thunder.js`
   (sound) and `overlay.js` (timeline).
@@ -135,4 +146,4 @@ assets/          icons (regenerate with `npm run icons`) the companion character
 - [x] **Phase 2:** scheduler, overlay with character, speech bubble, Done / Snooze
 - [x] **Phase 3:** blue lightning strike on canvas, screen flash, thunder sound, character
       landing and leap-away animations
-- [ ] Packaging (electron-builder installer)
+- [x] Packaging: Windows installer (`npm run dist`, output in `dist/`)
