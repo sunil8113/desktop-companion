@@ -8,10 +8,17 @@ Created by **Sunil**.
 
 ## Download
 
+**[sunil8113.github.io/desktop-companion](https://sunil8113.github.io/desktop-companion/)** picks
+the right download for your computer. Direct links (always the latest version):
+[Windows](https://github.com/sunil8113/desktop-companion/releases/latest/download/Desk-Companion-Setup.exe) ·
+[Mac, Apple Silicon](https://github.com/sunil8113/desktop-companion/releases/latest/download/Desk-Companion-mac-arm64.dmg) ·
+[Mac, Intel](https://github.com/sunil8113/desktop-companion/releases/latest/download/Desk-Companion-mac-x64.dmg)
+
+The page is `docs/index.html`, served by GitHub Pages; `docs/demo.mp4` is its demo video.
+
 ### Windows
 
-1. Go to [Releases](https://github.com/sunil8113/desktop-companion/releases/latest) and download
-   `Desk-Companion-Setup-x.x.x.exe`.
+1. Download `Desk-Companion-Setup.exe` (link above).
 2. Run it. The app isn't code-signed, so Windows may show **"Windows protected your PC"**.
    Click **More info → Run anyway**.
 3. Desk Companion starts in the system tray (check the **^** overflow area next to the clock).
@@ -22,9 +29,9 @@ Desk Companion**.
 
 ### macOS
 
-1. Go to [Releases](https://github.com/sunil8113/desktop-companion/releases/latest) and download
-   `Desk-Companion-x.x.x-mac-arm64.dmg` for Apple Silicon Macs (M1 and later) or
-   `Desk-Companion-x.x.x-mac-x64.dmg` for Intel Macs. (Apple menu → **About This Mac** shows which.)
+1. Download `Desk-Companion-mac-arm64.dmg` for Apple Silicon Macs (M1 and later) or
+   `Desk-Companion-mac-x64.dmg` for Intel Macs (links above). Apple menu → **About This Mac**
+   shows which.
 2. Open the `.dmg` and drag **Desk Companion** into **Applications**.
 3. The app isn't notarized by Apple, so the first time you open it macOS blocks it. Go to
    **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to
@@ -86,20 +93,23 @@ the Settings footer. The file is validated on load, and if it's corrupt it's ren
 
 Once a day, when you sign in (or unlock the PC on a new day), a small bubble from Sunil says
 good morning with a quote. After you click **Done** on the "Go home" reminder, a goodbye bubble
-follows with a fun line. There's a different quote and line for every date of the year, and
-special messages on festivals and other days.
+follows with a fun line. There's a different quote and line for every date of the year, so
+they're kept a surprise: they ship scrambled in `assets/quotes.json`.
 
-They all live in [`assets/quotes.json`](assets/quotes.json), which the app also downloads from
-this repo (at most once an hour). **To change a quote or add a message for a particular day,
-edit that file on GitHub; there's no need for a new release.** Under `"specials"`, use
-`"MM-DD"` for every year or `"YYYY-MM-DD"` for one date:
+For the maintainer: the app downloads the current quotes from a secret Gist (at most once an
+hour), so **quotes and special-day messages can be changed without a new release**.
 
-```json
-"2026-11-14": { "title": "Happy Children's Day! 🎈", "morning": "Stay curious like a kid today!", "evening": "Go play a little tonight!" }
-```
+- **A message for a particular day:** edit `quotes.json` in the Gist. Under `"specials"`, use
+  `"MM-DD"` for every year or `"YYYY-MM-DD"` for one date; any field left out comes from that
+  date's normal lines:
+  ```json
+  "2026-11-14": { "title": "Happy Children's Day! 🎈", "morning": "Stay curious like a kid today!", "evening": "Go play a little tonight!" }
+  ```
+- **The daily lines:** `node scripts/quotes.js decode` writes a readable copy to
+  `quotes-private/` (git-ignored). Edit it, run `node scripts/quotes.js encode`, then paste
+  `quotes-private/gist-quotes.json` into the Gist and commit the updated `assets/quotes.json`.
 
-Any field a special leaves out comes from that date's normal lines. If the download fails, the
-app uses the last copy it downloaded, or the one it was installed with.
+If the download fails, the app uses the last copy it downloaded, or the one it was installed with.
 
 ## Using your own character
 

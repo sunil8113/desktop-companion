@@ -8,3 +8,6 @@ sunil photo blue.jpeg
 # personal companions and Marvel images: kept out of the public repo
 local-characters/
 spiderman.png
+
+# readable daily quotes (the repo only has the scrambled assets/quotes.json)
+quotes-private/
