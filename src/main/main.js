@@ -10,6 +10,7 @@ const { OverlayPresenter } = require('./overlay-window');
 const { createTray } = require('./tray');
 const settingsWindow = require('./settings-window');
 const { initUpdater, restartToUpdate, checkForUpdates } = require('./updater');
+const quotes = require('./quotes');
 
 let scheduler;
 let presenter;
@@ -52,18 +53,26 @@ function creator() {
 const statePath = () => path.join(app.getPath('userData'), 'state.json');
 const GREETING_ID = 'creator-greeting';
 
+let greeting = null; // the hello being prepared (the day's quote may be downloading)
+
+// Resolves once today's hello, if it's due, is queued, so reminders can queue after it.
 function greetIfNewDay() {
-  const text = takeDailyGreeting();
-  if (text) showGreeting(text);
+  if (!greeting && takeDailyGreeting()) {
+    greeting = greetingText()
+      .then(showGreeting)
+      .finally(() => (greeting = null));
+  }
+  return greeting || Promise.resolve();
 }
 
 function showGreeting(text) {
   // Built directly rather than through normalizeReminder, whose length limits suit reminders
-  // typed in Settings, not the longer quotes.
+  // typed in Settings, not quotes.
   const greeting = { id: GREETING_ID, type: 'greeting', title: text.title, message: text.message, companion: '', prop: 'none' };
   presenter.enqueue(greeting, { isGreeting: true });
 }
 
+// Whether to greet now (not greeted yet today); records that we did.
 function takeDailyGreeting() {
   const now = new Date();
   const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
@@ -73,66 +82,32 @@ function takeDailyGreeting() {
   } catch {
     /* first run, or unreadable: greet */
   }
-  if (state.lastGreeting === today) return null;
+  if (state.lastGreeting === today) return false;
   try {
     fs.writeFileSync(statePath(), JSON.stringify({ ...state, lastGreeting: today }));
   } catch (err) {
     console.warn('[greeting] could not save state:', err.message);
   }
-  return greetingText(now);
+  return true;
 }
 
-// For each day of the week (Date#getDay(): 0 = Sunday): a motivational quote for the morning
-// hello, and a fun line for the evening farewell (shown with the "Go home" reminder).
-const GREETINGS = [
-  {
-    day: 'Sunday',
-    emoji: '🧘',
-    quote: 'Once every seven days, do something that frightens you. Every time we do something that we resist and is frightening, we actually grow in our power.',
-    vibe: 'Use today to reset, breathe, and step just a tiny bit outside your comfort zone to prep for a fresh start.',
-  },
-  {
-    day: 'Monday',
-    emoji: '💪',
-    quote: 'There are 7 days in a week, and SOMEDAY isn’t one of them.',
-    vibe: 'Ditch the "I\'ll do it someday" excuse. Grab a big cup of coffee and treat today like the start of your next great adventure.',
-  },
-  {
-    day: 'Tuesday',
-    emoji: '🚀',
-    quote: 'Do something today that your future self will thank you for.',
-    vibe: 'Your future self is basically a time traveler judging your current laziness. Make them proud (or at least give them a neat desk or a finished task).',
-  },
-  {
-    day: 'Wednesday',
-    emoji: '😂',
-    quote: 'Seven days without laughter makes one weak.',
-    vibe: "You're officially halfway through the week. If things get stressful, take a quick break, laugh at a silly video, and recharge.",
-  },
-  {
-    day: 'Thursday',
-    emoji: '🎈',
-    quote: "If you're not having fun, you're doing something wrong.",
-    vibe: 'Thursday is the sneak peek of the weekend. Find a tiny bit of joy or playfulness in whatever project is on your plate right now.',
-  },
-  {
-    day: 'Friday',
-    emoji: '🎉',
-    quote: 'My mission in life is not merely to survive, but to thrive; and to do so with some passion, some compassion, some humor, and some style.',
-    vibe: 'Friday calls for high energy, good music, and wrapping up your goals with a smile.',
-  },
-  {
-    day: 'Saturday',
-    emoji: '🌈',
-    quote: "It's kind of fun to do the impossible.",
-    vibe: 'Saturday is your playground. Tackle a passion project, go on an adventure, or do absolutely nothing guilt-free.',
-  },
+// The day's lines come from quotes.js (a different pair for every date of the year); the
+// titles name the weekday, unless it's a special day with a title of its own.
+const WEEKDAYS = [
+  ['Sunday', '🧘'],
+  ['Monday', '💪'],
+  ['Tuesday', '🚀'],
+  ['Wednesday', '😂'],
+  ['Thursday', '🎈'],
+  ['Friday', '🎉'],
+  ['Saturday', '🌈'],
 ];
 
-function greetingText(now = new Date()) {
-  const g = GREETINGS[now.getDay()];
-  const title = now.getHours() < 12 ? `Good morning! Happy ${g.day} ${g.emoji}` : `Happy ${g.day}! ${g.emoji}`;
-  return { title, message: `“${g.quote}”` };
+async function greetingText(now = new Date()) {
+  const lines = await quotes.forDate(now);
+  const [day, emoji] = WEEKDAYS[now.getDay()];
+  const title = lines.title || (now.getHours() < 12 ? `Good morning! Happy ${day} ${emoji}` : `Happy ${day}! ${emoji}`);
+  return { title, message: `“${lines.morning}”` };
 }
 
 // When an update has downloaded, a bubble like the hello offers to restart into it.
@@ -151,9 +126,10 @@ function showUpdateReady(version, extraMeta = {}) {
 // Clicking Done on the "Go home" reminder brings the creator's farewell for the day.
 const FAREWELL_AFTER_ID = 'home';
 
-function showFarewell(now = new Date()) {
-  const g = GREETINGS[now.getDay()];
-  const bye = { id: 'creator-farewell', type: 'greeting', title: `That's a wrap on ${g.day}! 🌙`, message: g.vibe, companion: '', prop: 'none' };
+async function showFarewell(now = new Date()) {
+  const lines = await quotes.forDate(now);
+  const title = lines.title || `That's a wrap on ${WEEKDAYS[now.getDay()][0]}! 🌙`;
+  const bye = { id: 'creator-farewell', type: 'greeting', title, message: lines.evening, companion: '', prop: 'none' };
   presenter.enqueue(bye, { isGreeting: true, isFarewell: true });
 }
 
@@ -301,8 +277,8 @@ function init() {
     },
   });
 
-  scheduler.on('due', (reminder, meta) => {
-    greetIfNewDay(); // not greeted yet today (e.g. the PC stayed unlocked overnight): hello first
+  scheduler.on('due', async (reminder, meta) => {
+    await greetIfNewDay(); // not greeted yet today (e.g. the PC stayed unlocked overnight): hello first
     presenter.enqueue(reminder, meta);
   });
   presenter.on('done', ({ reminder, meta }) => {
@@ -345,7 +321,7 @@ function init() {
   const demo = process.argv.find((a) => a === '--demo' || a.startsWith('--demo='));
   if (demo) {
     const id = demo.split('=')[1];
-    if (id === 'greeting') setTimeout(() => showGreeting(greetingText()), 1500);
+    if (id === 'greeting') setTimeout(async () => showGreeting(await greetingText()), 1500);
     else if (id === 'farewell') setTimeout(() => showFarewell(), 1500);
     else if (id === 'update') setTimeout(() => showUpdateReady(app.getVersion(), { isTest: true }), 1500);
     else setTimeout(() => showTestReminder(id && config.get().reminders.find((r) => r.id === id)), 1500);

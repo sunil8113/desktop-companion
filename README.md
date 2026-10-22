@@ -82,6 +82,25 @@ the Settings footer. The file is validated on load, and if it's corrupt it's ren
   missed by more than that, it's skipped for the day.
 - Only one overlay shows at a time. Others queue, and the same reminder is never queued twice.
 
+## Daily hello and farewell
+
+Once a day, when you sign in (or unlock the PC on a new day), a small bubble from Sunil says
+good morning with a quote. After you click **Done** on the "Go home" reminder, a goodbye bubble
+follows with a fun line. There's a different quote and line for every date of the year, and
+special messages on festivals and other days.
+
+They all live in [`assets/quotes.json`](assets/quotes.json), which the app also downloads from
+this repo (at most once an hour). **To change a quote or add a message for a particular day,
+edit that file on GitHub; there's no need for a new release.** Under `"specials"`, use
+`"MM-DD"` for every year or `"YYYY-MM-DD"` for one date:
+
+```json
+"2026-11-14": { "title": "Happy Children's Day! 🎈", "morning": "Stay curious like a kid today!", "evening": "Go play a little tonight!" }
+```
+
+Any field a special leaves out comes from that date's normal lines. If the download fails, the
+app uses the last copy it downloaded, or the one it was installed with.
+
 ## Using your own character
 
 Pick a companion in **Settings → Character**:
