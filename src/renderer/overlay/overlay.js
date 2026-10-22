@@ -163,38 +163,6 @@ function popBubble() {
   ).finished;
 }
 
-// "Great job! — name" floating up from the bubble when you click Done.
-const CHEERS = ['Great job!', 'Well done!', 'Nice work!', 'Proud of you!', 'Keep it up!'];
-
-function cheer() {
-  const box = bubble.getBoundingClientRect();
-  const x = box.left + box.width / 2;
-  const y = box.top + box.height / 2;
-  const el = document.createElement('div');
-  el.className = 'cheer';
-  const from = document.createElement('span');
-  from.className = 'from';
-  from.textContent = `— ${payload.creator.name}`;
-  el.append(CHEERS[Math.floor(Math.random() * CHEERS.length)], from);
-  el.style.left = `${x}px`;
-  el.style.top = `${y}px`;
-  document.body.append(el);
-  if (!reducedMotion) fx.sparks(x, y, 22, '255, 205, 70');
-  const base = 'translate(-50%, -50%)';
-  return el
-    .animate(
-      [
-        { opacity: 0, transform: `${base} scale(0.6)` },
-        { opacity: 1, transform: `${base} scale(1.08)`, offset: 0.15 },
-        { opacity: 1, transform: `${base} scale(1)`, offset: 0.25 },
-        { opacity: 1, transform: `${base} translateY(-30px)`, offset: 0.75 },
-        { opacity: 0, transform: `${base} translateY(-60px)` },
-      ],
-      { duration: 1400, easing: 'ease-out', fill: 'forwards' },
-    )
-    .finished.then(() => el.remove());
-}
-
 function feet() {
   const box = character.getBoundingClientRect();
   return { x: box.left + box.width / 2, y: box.bottom - 8 };
@@ -878,9 +846,7 @@ async function leave(action) {
   doneBtn.disabled = true;
   snoozeBtn.disabled = true;
   stage.classList.remove('live');
-  const cheered = action === 'done' && !payload.isGreeting ? cheer() : null;
   await playExit(action);
-  await cheered; // let it finish before the window closes
   api[action]();
 }
 
