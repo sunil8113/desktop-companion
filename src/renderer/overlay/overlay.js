@@ -72,6 +72,12 @@ function render(p) {
   if (p.isGreeting) {
     // The daily hello: no companion, just the creator's photo, the message and a thank-you.
     stage.classList.add('hello');
+    // "“quote”\n\nfun line": set the quote apart.
+    const [quote, ...rest] = p.reminder.message.split('\n\n');
+    const q = document.createElement('span');
+    q.className = 'quote';
+    q.textContent = quote;
+    message.replaceChildren(q, rest.length ? `\n\n${rest.join('\n\n')}` : '');
     if (p.creator.photo) {
       helloPhoto.src = p.creator.photo;
       helloPhoto.hidden = false;

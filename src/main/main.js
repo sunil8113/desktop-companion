@@ -57,7 +57,9 @@ function greetIfNewDay() {
 }
 
 function showGreeting(text) {
-  const greeting = config.normalizeReminder({ id: GREETING_ID, title: text.title, message: text.message, prop: 'none' });
+  // Built directly rather than through normalizeReminder, whose length limits suit reminders
+  // typed in Settings, not the longer quotes.
+  const greeting = { id: GREETING_ID, type: 'greeting', title: text.title, message: text.message, companion: '', prop: 'none' };
   presenter.enqueue(greeting, { isGreeting: true });
 }
 
@@ -79,19 +81,56 @@ function takeDailyGreeting() {
   return greetingText(now);
 }
 
-// A different hello for each day of the week (Date#getDay(): 0 = Sunday).
+// A motivational quote for each day of the week (Date#getDay(): 0 = Sunday), with a fun line.
 const GREETINGS = [
-  { title: 'Sunday Reset! 🧘', message: "Today's only deadline: doing nothing. Rest hard, hydrate harder. Even legends need recovery days." },
-  { title: 'Monday called. You answered! 📞', message: "Most people hit snooze on Mondays. You showed up, and that's already a win. Now go stack some more!" },
-  { title: 'Tuesday Takeover! 🚀', message: "Monday was just the trailer. Today's the movie, and you're the main character. Go crush it!" },
-  { title: 'Hump Day Hero! 🐪', message: "You're halfway up the mountain. The view from the top is called Saturday. Keep climbing!" },
-  { title: 'Thursday Thunder! ⚡', message: 'Friday can already hear you coming. One more strong day and the weekend is all yours!' },
-  { title: 'Friyay! 🎉', message: 'Your future self is already planning weekend snacks. Finish strong and make them proud!' },
-  { title: 'Saturday Mode: ON! 🌈', message: 'No alarms, no meetings, no excuses for not having fun. You worked for this. Enjoy every minute!' },
+  {
+    day: 'Sunday',
+    emoji: '🧘',
+    quote: 'Once every seven days, do something that frightens you. Every time we do something that we resist and is frightening, we actually grow in our power.',
+    vibe: 'Use today to reset, breathe, and step just a tiny bit outside your comfort zone to prep for a fresh start.',
+  },
+  {
+    day: 'Monday',
+    emoji: '💪',
+    quote: 'There are 7 days in a week, and SOMEDAY isn’t one of them.',
+    vibe: 'Ditch the "I\'ll do it someday" excuse. Grab a big cup of coffee and treat today like the start of your next great adventure.',
+  },
+  {
+    day: 'Tuesday',
+    emoji: '🚀',
+    quote: 'Do something today that your future self will thank you for.',
+    vibe: 'Your future self is basically a time traveler judging your current laziness. Make them proud (or at least give them a neat desk or a finished task).',
+  },
+  {
+    day: 'Wednesday',
+    emoji: '😂',
+    quote: 'Seven days without laughter makes one weak.',
+    vibe: "You're officially halfway through the week. If things get stressful, take a quick break, laugh at a silly video, and recharge.",
+  },
+  {
+    day: 'Thursday',
+    emoji: '🎈',
+    quote: "If you're not having fun, you're doing something wrong.",
+    vibe: 'Thursday is the sneak peek of the weekend. Find a tiny bit of joy or playfulness in whatever project is on your plate right now.',
+  },
+  {
+    day: 'Friday',
+    emoji: '🎉',
+    quote: 'My mission in life is not merely to survive, but to thrive; and to do so with some passion, some compassion, some humor, and some style.',
+    vibe: 'Friday calls for high energy, good music, and wrapping up your goals with a smile.',
+  },
+  {
+    day: 'Saturday',
+    emoji: '🌈',
+    quote: "It's kind of fun to do the impossible.",
+    vibe: 'Saturday is your playground. Tackle a passion project, go on an adventure, or do absolutely nothing guilt-free.',
+  },
 ];
 
 function greetingText(now = new Date()) {
-  return GREETINGS[now.getDay()];
+  const g = GREETINGS[now.getDay()];
+  const title = now.getHours() < 12 ? `Good morning! Happy ${g.day} ${g.emoji}` : `Happy ${g.day}! ${g.emoji}`;
+  return { title, message: `“${g.quote}”\n\n${g.vibe}` };
 }
 
 // Optional custom thunder: assets/sounds/thunder.(mp3|ogg|wav). Otherwise the overlay synthesises one.
