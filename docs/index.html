@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Desk Companion: your desk's own superhero</title>
+  <meta name="description" content="A free desktop app where animated heroes remind you to drink water, stretch, eat lunch and go home on time. For Windows and Mac.">
+  <link rel="icon" href="icon.png">
+  <!-- Link previews (LinkedIn, WhatsApp, X...) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Desk Companion: your desk's own superhero">
+  <meta property="og:description" content="Animated heroes remind you to drink water, stretch, eat lunch and go home on time. Free for Windows and Mac.">
+  <meta property="og:image" content="https://sunil8113.github.io/desktop-companion/poster.jpg">
+  <meta property="og:url" content="https://sunil8113.github.io/desktop-companion/">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --bg: #0d1424;
+      --surface: #151f35;
+      --surface-2: #1c2842;
+      --border: #2a3858;
+      --text: #e8eefc;
+      --muted: #a3b1cf;
+      --accent: #3d95ff;
+      --accent-strong: #2a7ff0;
+      --gold: #ffd23f;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(900px 500px at 85% -10%, rgba(90, 63, 184, 0.45), transparent 60%),
+        radial-gradient(800px 500px at 0% 30%, rgba(45, 79, 179, 0.35), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font: 16px/1.55 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+    header.top { display: flex; align-items: center; gap: 10px; padding: 20px 0; font-weight: 700; font-size: 18px; }
+    header.top img { width: 32px; height: 32px; }
+
+    .hero { display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; padding: 28px 0 56px; }
+    h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
+    h1 .glow { background: linear-gradient(90deg, #8fc3ff, #c9a8ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { color: var(--muted); font-size: 18px; margin: 0 0 28px; max-width: 520px; }
+
+    .screen {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 6px rgba(255, 255, 255, 0.03);
+      background: #2d4fb3;
+      aspect-ratio: 780 / 570;
+    }
+    .screen video { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* Download area: filled in by the script for the visitor's device. */
+    .get { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 24px; border-radius: 12px; border: 1px solid transparent;
+      font: inherit; font-weight: 700; font-size: 17px; text-decoration: none; cursor: pointer;
+      color: #fff; background: var(--accent);
+      box-shadow: 0 10px 30px rgba(61, 149, 255, 0.35);
+      transition: transform 0.1s ease, background-color 0.15s ease;
+    }
+    .btn:hover { background: var(--accent-strong); }
+    .btn:active { transform: scale(0.98); }
+    .btn.secondary { background: var(--surface-2); border-color: var(--border); box-shadow: none; font-weight: 600; font-size: 15px; color: var(--text); }
+    .btn.secondary:hover { border-color: var(--accent); }
+    .btn svg { width: 20px; height: 20px; flex: none; }
+    .small { color: var(--muted); font-size: 14px; }
+    .small a { color: var(--muted); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .phone-note {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 4px;
+    }
+    .phone-note strong { display: block; }
+
+    section.features { padding: 24px 0 56px; }
+    h2 { font-size: 26px; margin: 0 0 20px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+    .card .emoji { font-size: 28px; }
+    .card h3 { margin: 8px 0 6px; font-size: 17px; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+
+    section.help { padding: 0 0 56px; }
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; }
+    summary { cursor: pointer; font-weight: 600; }
+    details p, details ol { color: var(--muted); margin: 10px 0 0; }
+    code { background: var(--surface-2); padding: 2px 6px; border-radius: 6px; font-size: 14px; word-break: break-all; }
+
+    footer { border-top: 1px solid var(--border); padding: 24px 0 40px; color: var(--muted); font-size: 15px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    footer .sig { font-family: "Segoe Script", "Snell Roundhand", "Brush Script MT", cursive; color: var(--text); font-size: 18px; }
+
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #fff; color: #0f1a33; padding: 10px 18px; border-radius: 999px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; gap: 28px; padding-top: 8px; }
+      .hero .media { order: -1; }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .get, .get .btn { width: 100%; }
+      .get { align-items: stretch; }
+    }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top"><img src="icon.png" alt="" width="32" height="32"> Desk Companion</header>
+
+    <section class="hero">
+      <div>
+        <h1>Your desk's own <span class="glow">superhero</span>.</h1>
+        <p class="lead">A free desktop app where animated heroes remind you to drink water, stretch, eat lunch and go home on time, with a fresh quote to start every day.</p>
+        <div class="get" id="get">
+          <!-- Desktop buttons by default; replaced for phones by the script below. -->
+          <a class="btn" id="primary" href="https://github.com/sunil8113/desktop-companion/releases/latest">Download</a>
+          <div class="row" id="others"></div>
+          <span class="small" id="version">Free for Windows and Mac</span>
+        </div>
+      </div>
+      <div class="media">
+        <div class="screen">
+          <video src="demo.mp4" poster="poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Demo: a morning greeting, then heroes arriving with reminders"></video>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2>What it does</h2>
+      <div class="grid">
+        <div class="card"><div class="emoji">🦸</div><h3>9 animated heroes</h3><p>A thunder god on a lightning strike, a sea hero on a water spout, an archer on a zip line and more, each with its own entrance.</p></div>
+        <div class="card"><div class="emoji">💧</div><h3>Healthy breaks</h3><p>Water, stretching, lunch and going home, on your schedule. Your hero even hands you the water bottle.</p></div>
+        <div class="card"><div class="emoji">☀️</div><h3>A quote every day</h3><p>A new one each morning, all year round, and a fun goodbye when it's time to head home.</p></div>
+        <div class="card"><div class="emoji">🖼️</div><h3>Your own pictures</h3><p>Add any images you like and give every reminder a different companion.</p></div>
+      </div>
+    </section>
+
+    <section class="help">
+      <h2>Installing</h2>
+      <details>
+        <summary>Windows says "Windows protected your PC"</summary>
+        <p>That's normal for small independent apps. Click <strong>More info</strong>, then <strong>Run anyway</strong>. Desk Companion appears in the system tray, next to the clock (check the <strong>^</strong> arrow). It updates itself from then on.</p>
+      </details>
+      <details>
+        <summary>Mac says it can't open the app</summary>
+        <ol>
+          <li>Open the downloaded file and drag <strong>Desk Companion</strong> into <strong>Applications</strong>.</li>
+          <li>Open it once. When macOS blocks it, go to <strong>System Settings → Privacy &amp; Security</strong>, scroll down and click <strong>Open Anyway</strong>.</li>
+          <li>If macOS says the app "is damaged", run this once in Terminal: <code>xattr -dr com.apple.quarantine "/Applications/Desk Companion.app"</code></li>
+        </ol>
+        <p>Desk Companion lives in the menu bar at the top of the screen.</p>
+      </details>
+      <details>
+        <summary>Which Mac download do I need?</summary>
+        <p>Apple menu → <strong>About This Mac</strong>. If it says <strong>Apple M1, M2, M3 or M4</strong>, use the Apple Silicon version; if it says <strong>Intel</strong>, use the Intel version.</p>
+      </details>
+    </section>
+
+    <footer>
+      <span>Made with ❤️ by <span class="sig">Sunil</span></span>
+      <span><a href="https://github.com/sunil8113/desktop-companion">Source code</a> · Free and open source</span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const BASE = 'https://github.com/sunil8113/desktop-companion/releases/latest/download/';
+    const FILES = {
+      win: BASE + 'Desk-Companion-Setup.exe',
+      macArm: BASE + 'Desk-Companion-mac-arm64.dmg',
+      macIntel: BASE + 'Desk-Companion-mac-x64.dmg',
+    };
+    const PAGE = 'https://sunil8113.github.io/desktop-companion/';
+    const ICON = {
+      win: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7.1H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7.1L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></svg>',
+      mac: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.5 2.8-1.3z"/></svg>',
+      share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>',
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const ua = navigator.userAgent;
+    const isIPad = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+    const isPhone = /Android|iPhone|iPod|Mobile|webOS|BlackBerry/i.test(ua) || isIPad;
+    const isMac = !isIPad && /Macintosh|Mac OS X/.test(ua);
+    const isWindows = /Windows/.test(ua);
+
+    function toast(text) {
+      const t = $('toast');
+      t.textContent = text;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function link(cls, href, html) {
+      const a = document.createElement('a');
+      a.className = cls;
+      a.href = href;
+      a.innerHTML = html;
+      return a;
+    }
+
+    // Apple Silicon or Intel? Chrome and Edge can tell us; Safari's graphics card name usually can.
+    async function macArch() {
+      try {
+        const d = await navigator.userAgentData?.getHighEntropyValues(['architecture']);
+        if (d?.architecture) return d.architecture === 'arm' ? 'arm' : 'intel';
+      } catch {}
+      try {
+        const gl = document.createElement('canvas').getContext('webgl');
+        const info = gl.getExtension('WEBGL_debug_renderer_info');
+        const gpu = gl.getParameter(info.UNMASKED_RENDERER_WEBGL);
+        if (/Intel|AMD|Radeon/i.test(gpu)) return 'intel';
+      } catch {}
+      return 'arm'; // most Macs sold since 2021
+    }
+
+    async function setUpDesktop() {
+      const primary = $('primary');
+      const others = $('others');
+      if (isMac) {
+        const arch = await macArch();
+        const main = arch === 'arm' ? ['macArm', 'Apple Silicon'] : ['macIntel', 'Intel'];
+        const alt = arch === 'arm' ? ['macIntel', 'Intel Mac? Get this version'] : ['macArm', 'Apple Silicon Mac? Get this version'];
+        primary.href = FILES[main[0]];
+        primary.innerHTML = `${ICON.mac} Download for Mac`;
+        others.append(link('small', FILES[alt[0]], alt[1]));
+      } else if (isWindows) {
+        primary.href = FILES.win;
+        primary.innerHTML = `${ICON.win} Download for Windows`;
+        others.append(link('small', FILES.macArm, 'On a Mac? Download for Mac'));
+      } else {
+        primary.href = FILES.win;
+        primary.innerHTML = `${ICON.win} Download for Windows`;
+        others.append(link('btn secondary', FILES.macArm, `${ICON.mac} Mac (Apple Silicon)`), link('btn secondary', FILES.macIntel, `${ICON.mac} Mac (Intel)`));
+      }
+    }
+
+    // On a phone: it's a desktop app, so help people send the link to their computer.
+    function setUpPhone() {
+      const get = $('get');
+      const text = 'Desk Companion: a free desktop app where superheroes remind you to drink water and take breaks. Open on your laptop:';
+      get.innerHTML = `
+        <div class="phone-note"><span style="font-size:24px">💻</span>
+          <span><strong>Desk Companion is a desktop app.</strong>
+          <span class="small">Open this page on your Windows or Mac computer to install it. Send yourself the link:</span></span>
+        </div>`;
+      if (navigator.share) {
+        const share = document.createElement('button');
+        share.className = 'btn';
+        share.innerHTML = `${ICON.share} Send to my computer`;
+        share.addEventListener('click', () => navigator.share({ title: 'Desk Companion', text, url: PAGE }).catch(() => {}));
+        get.append(share);
+      }
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.append(
+        link('btn secondary', `https://wa.me/?text=${encodeURIComponent(`${text} ${PAGE}`)}`, '💬 WhatsApp'),
+        link('btn secondary', `mailto:?subject=${encodeURIComponent('Desk Companion: install on my laptop')}&body=${encodeURIComponent(`${text}\n${PAGE}`)}`, '📧 Email'),
+      );
+      const copy = document.createElement('button');
+      copy.className = 'btn secondary';
+      copy.textContent = '📋 Copy link';
+      copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(PAGE);
+          toast('Link copied');
+        } catch {
+          toast(PAGE);
+        }
+      });
+      row.append(copy);
+      get.append(row);
+    }
+
+    // Show the current version and date.
+    async function showVersion() {
+      try {
+        const res = await fetch('https://api.github.com/repos/sunil8113/desktop-companion/releases/latest');
+        if (!res.ok) return;
+        const r = await res.json();
+        const date = new Date(r.published_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+        const v = $('version');
+        if (v) v.textContent = `Version ${r.tag_name.replace(/^v/, '')} · updated ${date} · free`;
+      } catch {}
+    }
+
+    if (isPhone) setUpPhone();
+    else {
+      setUpDesktop();
+      showVersion();
+    }
+  </script>
+</body>
+</html>

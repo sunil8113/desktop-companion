@@ -1,22 +1,24 @@
 // The creator's daily lines: a quote for the morning hello and a fun line for the evening
 // farewell, one pair per date, plus special-day messages (festivals, the app's birthday...).
 //
-// They live in assets/quotes.json. The app also downloads that same file from the GitHub repo
-// (at most once an hour), so quotes and special days can be changed by editing it on GitHub,
+// A copy ships in assets/quotes.json, and the app downloads the current one from a secret Gist
+// (at most once an hour), so quotes and special days can be changed by editing the Gist,
 // without a new release. If it can't be downloaded it uses the last downloaded copy, and
-// failing that the copy bundled with the app.
+// failing that the bundled one. scripts/quotes.js decodes and encodes the file.
 //
 // quotes.json: {
-//   "days":     { "MM-DD": { "morning": "...", "evening": "..." }, ... },
-//   "specials": { "MM-DD" or "YYYY-MM-DD": { "title": "...", "morning": "...", "evening": "..." } }
+//   "specials": { "MM-DD" or "YYYY-MM-DD": { "title": "...", "morning": "...", "evening": "..." } },
+//   "days":     scrambled { "MM-DD": { "morning": "...", "evening": "..." }, ... }
 // }
 // A special for an exact date wins over a yearly one; any field it leaves out comes from "days".
 const { app, net } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const paths = require('./paths');
+const { unscramble } = require('./scramble');
 
-const REMOTE_URL = 'https://raw.githubusercontent.com/sunil8113/desktop-companion/main/assets/quotes.json';
+// The secret Gist holding quotes.json (scrambled days, readable specials).
+const REMOTE_URL = 'GIST_URL_PLACEHOLDER';
 const REFRESH_EVERY = 60 * 60 * 1000;
 const FETCH_TIMEOUT = 6000;
 const FALLBACK = {
@@ -34,9 +36,11 @@ const text = (value, max) => (typeof value === 'string' && value.trim() ? value.
 // Validates and tidies a quotes file; throws if it isn't usable.
 function parse(raw) {
   const data = JSON.parse(raw.replace(/^﻿/, '')); // some editors add a byte-order mark
+  // "days" ships scrambled (a string, see scramble.js); a readable object works too.
+  const rawDays = typeof data?.days === 'string' ? JSON.parse(unscramble(data.days)) : data?.days;
   const days = {};
   const specials = {};
-  for (const [key, v] of Object.entries(data?.days || {})) {
+  for (const [key, v] of Object.entries(rawDays || {})) {
     if (/^\d\d-\d\d$/.test(key) && v && typeof v === 'object') days[key] = { morning: text(v.morning, 300), evening: text(v.evening, 300) };
   }
   for (const [key, v] of Object.entries(data?.specials || {})) {
