@@ -152,28 +152,6 @@ html, body {
 #hello-photo[hidden] { display: none; }
 #message .quote { color: var(--ink); font-style: italic; font-weight: 600; }
 
-.cheer .from {
-  font-family: var(--signature-font);
-  color: var(--accent-strong);
-  white-space: nowrap;
-}
-
-/* "Great job! — name" that floats up when you click Done. */
-.cheer {
-  position: fixed;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: #ffffff;
-  color: var(--ink);
-  font-size: 16px;
-  font-weight: 700;
-  white-space: nowrap;
-  box-shadow: 0 12px 34px rgba(5, 20, 60, 0.3), 0 0 0 1px rgba(15, 26, 51, 0.08);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-.cheer .from { margin-left: 6px; font-size: 15px; font-weight: 400; }
-
 #done { background: var(--accent); color: #fff; }
 #done:hover { background: var(--accent-strong); }
 
