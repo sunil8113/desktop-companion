@@ -81,13 +81,13 @@ function takeDailyGreeting() {
 
 // A different hello for each day of the week (Date#getDay(): 0 = Sunday).
 const GREETINGS = [
-  { title: 'Sunday Funday! 🛋️', message: 'Couch: claimed. Snacks: ready. Water: don\'t forget it, champ!' },
-  { title: 'Monday? Bring it on! 😎', message: "Coffee in one hand, water in the other. Let's make this week legendary." },
-  { title: "Tuesday, let's GO! 🚀", message: "Yesterday was the warm-up. Today you're unstoppable." },
-  { title: 'Hump Day Hero! 🐪', message: "Halfway to the weekend! Stretch it out, superstar, you're doing great." },
-  { title: 'Thursday Thunder! ⚡', message: "One more push and it's practically Friday. Stay charged!" },
-  { title: 'Friyay! 🎉', message: 'Finish strong, then go treat yourself. You totally earned it!' },
-  { title: 'Saturday Vibes! 🌈', message: 'Zero meetings, 100% you. Go make today awesome!' },
+  { title: 'Sunday Reset! 🧘', message: "Today's only deadline: doing nothing. Rest hard, hydrate harder. Even legends need recovery days." },
+  { title: 'Monday called. You answered! 📞', message: "Most people hit snooze on Mondays. You showed up, and that's already a win. Now go stack some more!" },
+  { title: 'Tuesday Takeover! 🚀', message: "Monday was just the trailer. Today's the movie, and you're the main character. Go crush it!" },
+  { title: 'Hump Day Hero! 🐪', message: "You're halfway up the mountain. The view from the top is called Saturday. Keep climbing!" },
+  { title: 'Thursday Thunder! ⚡', message: 'Friday can already hear you coming. One more strong day and the weekend is all yours!' },
+  { title: 'Friyay! 🎉', message: 'Your future self is already planning weekend snacks. Finish strong and make them proud!' },
+  { title: 'Saturday Mode: ON! 🌈', message: 'No alarms, no meetings, no excuses for not having fun. You worked for this. Enjoy every minute!' },
 ];
 
 function greetingText(now = new Date()) {
