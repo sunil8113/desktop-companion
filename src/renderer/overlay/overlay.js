@@ -17,6 +17,7 @@ const bubble = $('bubble');
 const doneBtn = $('done');
 const snoozeBtn = $('snooze');
 const signature = $('signature');
+const helloPhoto = $('hello-photo');
 
 const fx = window.Lightning.createFx($('fx'));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,8 +70,12 @@ function render(p) {
   snoozeBtn.textContent = `Snooze ${p.snoozeMinutes} min`;
   signature.textContent = `— ${p.creator.name} ✨`;
   if (p.isGreeting) {
-    // The daily hello: just the message and a single button to say thanks.
+    // The daily hello: no companion, just the creator's photo, the message and a thank-you.
     stage.classList.add('hello');
+    if (p.creator.photo) {
+      helloPhoto.src = p.creator.photo;
+      helloPhoto.hidden = false;
+    }
     doneBtn.textContent = `Thanks, ${p.creator.name}!`;
     snoozeBtn.hidden = true;
   }

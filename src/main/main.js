@@ -42,7 +42,7 @@ function resolveCharacter(c) {
 const CREATOR_NAME = 'Sunil';
 
 function creator() {
-  return { name: CREATOR_NAME };
+  return { name: CREATOR_NAME, photo: fs.existsSync(paths.creatorPhoto) ? fileUrl(paths.creatorPhoto) : '' };
 }
 
 // Once a day the creator says hello: when the app starts (usually at sign-in), when the PC is
@@ -81,13 +81,13 @@ function takeDailyGreeting() {
 
 // A different hello for each day of the week (Date#getDay(): 0 = Sunday).
 const GREETINGS = [
-  { title: 'Happy Sunday! ☀️', message: 'Recharge mode: ON. Sip some water, stretch a little and enjoy doing nothing, guilt-free.' },
-  { title: 'Hello, Monday! 💪', message: "New week, new wins. You've got this, and I've got your water breaks covered." },
-  { title: 'Terrific Tuesday! 🚀', message: 'Monday survived. Today we fly! (Snacks are allowed.)' },
-  { title: 'Happy Wednesday! 🐪', message: 'Halfway to the weekend! Stand up, stretch and give yourself a high five.' },
-  { title: 'Thunder Thursday! ⚡', message: 'Almost Friday... keep the energy up and the water bottle close.' },
-  { title: "It's Friday! 🎉", message: 'Finish strong, then go do something fun. You earned it!' },
-  { title: 'Super Saturday! 🌈', message: 'No meetings, just good vibes. And yes, water still counts on weekends.' },
+  { title: 'Sunday Funday! 🛋️', message: 'Couch: claimed. Snacks: ready. Water: don\'t forget it, champ!' },
+  { title: 'Monday? Bring it on! 😎', message: "Coffee in one hand, water in the other. Let's make this week legendary." },
+  { title: "Tuesday, let's GO! 🚀", message: "Yesterday was the warm-up. Today you're unstoppable." },
+  { title: 'Hump Day Hero! 🐪', message: "Halfway to the weekend! Stretch it out, superstar, you're doing great." },
+  { title: 'Thursday Thunder! ⚡', message: "One more push and it's practically Friday. Stay charged!" },
+  { title: 'Friyay! 🎉', message: 'Finish strong, then go treat yourself. You totally earned it!' },
+  { title: 'Saturday Vibes! 🌈', message: 'Zero meetings, 100% you. Go make today awesome!' },
 ];
 
 function greetingText(now = new Date()) {
