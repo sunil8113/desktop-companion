@@ -128,6 +128,28 @@ html, body {
 #stage.hello #actor { display: none; }
 #stage.hello #bubble { margin-bottom: 0; transform-origin: 100% 100%; }
 #stage.hello #bubble::after { display: none; }
+/* Photo on the left, title and message beside it, button and signature full width below. */
+#stage.hello #bubble {
+  width: 380px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  align-items: start;
+}
+#stage.hello #bubble > * { grid-column: 2; }
+#stage.hello #hello-photo { grid-column: 1; grid-row: 1 / span 2; }
+#stage.hello #bubble > .actions,
+#stage.hello #bubble > #signature { grid-column: 1 / -1; }
+#hello-photo {
+  width: 56px;
+  height: 56px;
+  margin: 2px 0 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  box-shadow: 0 6px 16px rgba(5, 20, 60, 0.25);
+}
+#hello-photo[hidden] { display: none; }
 
 .cheer .from {
   font-family: var(--signature-font);
