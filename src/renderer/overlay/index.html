@@ -13,6 +13,11 @@
 
   <div id="stage">
     <section id="bubble" class="interactive" role="alertdialog" aria-labelledby="title" aria-describedby="message">
+      <!-- Once a day: a small hello from the creator, perched on top of the bubble. -->
+      <div id="greeting" hidden>
+        <img id="greeting-photo" alt="" draggable="false">
+        <p><span id="greeting-text"></span> <span class="greeting-from"></span></p>
+      </div>
       <span id="tag" hidden></span>
       <h1 id="title"></h1>
       <p id="message"></p>
@@ -20,6 +25,7 @@
         <button id="done" type="button">Done</button>
         <button id="snooze" type="button">Snooze 10 min</button>
       </div>
+      <p id="signature"></p>
     </section>
     <div id="actor">
       <div id="rig">

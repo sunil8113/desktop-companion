@@ -38,6 +38,37 @@ function resolveCharacter(c) {
   };
 }
 
+// The app's creator, who signs every reminder and says hello once a day.
+const CREATOR_NAME = 'Sunil';
+
+function creator() {
+  return { name: CREATOR_NAME, photo: fs.existsSync(paths.creatorPhoto) ? fileUrl(paths.creatorPhoto) : '' };
+}
+
+// The first reminder each day comes with a greeting from the creator. The day it was last
+// shown is kept in <userData>/state.json.
+const statePath = () => path.join(app.getPath('userData'), 'state.json');
+
+function takeDailyGreeting() {
+  const now = new Date();
+  const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+  let state = {};
+  try {
+    state = JSON.parse(fs.readFileSync(statePath(), 'utf8'));
+  } catch {
+    /* first run, or unreadable: greet */
+  }
+  if (state.lastGreeting === today) return null;
+  try {
+    fs.writeFileSync(statePath(), JSON.stringify({ ...state, lastGreeting: today }));
+  } catch (err) {
+    console.warn('[greeting] could not save state:', err.message);
+  }
+  const hour = now.getHours();
+  const hello = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  return `${hello}! Hope you have a wonderful day.`;
+}
+
 // Optional custom thunder: assets/sounds/thunder.(mp3|ogg|wav). Otherwise the overlay synthesises one.
 function thunderUrl() {
   for (const ext of ['mp3', 'ogg', 'wav']) {
@@ -177,6 +208,8 @@ function init() {
         soundEnabled: c.soundEnabled,
         thunderSrc: thunderUrl(),
         prop: propFor(reminder),
+        creator: creator(),
+        greeting: takeDailyGreeting(),
         ...resolveCharacter(look),
       };
     },

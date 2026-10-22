@@ -5,6 +5,7 @@
   --accent-strong: #1b6ef0;
   --ink: #0f1a33;
   --muted: #4a5878;
+  --signature-font: "Segoe Script", "Snell Roundhand", "Brush Script MT", cursive;
 }
 
 * { box-sizing: border-box; }
@@ -112,6 +113,74 @@ html, body {
 
 .actions button:active { transform: scale(0.97); }
 .actions button:disabled { cursor: default; opacity: 0.6; }
+
+/* The creator's signature, bottom-right of every bubble. */
+#signature {
+  margin: 10px 2px -6px 0;
+  text-align: right;
+  font: 15px var(--signature-font);
+  color: var(--muted);
+}
+
+/* Once a day: a small hello from the creator, sitting on top of the bubble. */
+#greeting {
+  position: absolute;
+  left: 6px;
+  bottom: calc(100% + 14px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 330px;
+  padding: 8px 16px 8px 8px;
+  border-radius: 28px;
+  background: #ffffff;
+  color: var(--ink);
+  box-shadow: 0 12px 34px rgba(5, 20, 60, 0.3), 0 0 0 1px rgba(15, 26, 51, 0.08);
+  opacity: 0; /* popped in after the bubble */
+  transform-origin: 34px 100%;
+}
+#greeting[hidden] { display: none; }
+#greeting::after {
+  content: "";
+  position: absolute;
+  left: 30px;
+  top: 100%;
+  border-style: solid;
+  border-width: 10px 8px 0;
+  border-color: #ffffff transparent transparent;
+}
+#greeting-photo {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+#greeting-photo[hidden] { display: none; }
+#greeting p { margin: 0; font-size: 13.5px; line-height: 1.4; }
+.greeting-from,
+.cheer .from {
+  font-family: var(--signature-font);
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+
+/* "Great job! — name" that floats up when you click Done. */
+.cheer {
+  position: fixed;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 12px 34px rgba(5, 20, 60, 0.3), 0 0 0 1px rgba(15, 26, 51, 0.08);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cheer .from { margin-left: 6px; font-size: 15px; font-weight: 400; }
 
 #done { background: var(--accent); color: #fff; }
 #done:hover { background: var(--accent-strong); }

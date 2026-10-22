@@ -16,6 +16,9 @@ const prop = $('prop');
 const bubble = $('bubble');
 const doneBtn = $('done');
 const snoozeBtn = $('snooze');
+const signature = $('signature');
+const greeting = $('greeting');
+const greetingPhoto = $('greeting-photo');
 
 const fx = window.Lightning.createFx($('fx'));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -66,6 +69,14 @@ function render(p) {
   title.textContent = p.reminder.title;
   message.textContent = p.reminder.message;
   snoozeBtn.textContent = `Snooze ${p.snoozeMinutes} min`;
+  signature.textContent = `— ${p.creator.name} ✨`;
+  if (p.greeting) {
+    $('greeting-text').textContent = p.greeting;
+    greeting.querySelector('.greeting-from').textContent = `— ${p.creator.name}`;
+    greetingPhoto.hidden = !p.creator.photo;
+    if (p.creator.photo) greetingPhoto.src = p.creator.photo;
+    greeting.hidden = false;
+  }
 
   characterImg.src = p.characterSrc;
   stage.classList.toggle('framed', p.characterStyle === 'frame');
@@ -136,6 +147,50 @@ function popBubble() {
     ],
     { duration: 320, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)', fill: 'backwards' },
   ).finished;
+}
+
+function popGreeting() {
+  greeting.style.opacity = '1';
+  greeting.animate(
+    [
+      { opacity: 0, transform: 'translateY(10px) scale(0.5)' },
+      { opacity: 1, transform: 'scale(1.06)', offset: 0.7 },
+      { opacity: 1, transform: 'none' },
+    ],
+    { duration: 360, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)', fill: 'backwards' },
+  );
+}
+
+// "Great job! — name" floating up from the bubble when you click Done.
+const CHEERS = ['Great job!', 'Well done!', 'Nice work!', 'Proud of you!', 'Keep it up!'];
+
+function cheer() {
+  const box = bubble.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const y = box.top + box.height / 2;
+  const el = document.createElement('div');
+  el.className = 'cheer';
+  const from = document.createElement('span');
+  from.className = 'from';
+  from.textContent = `— ${payload.creator.name}`;
+  el.append(CHEERS[Math.floor(Math.random() * CHEERS.length)], from);
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  document.body.append(el);
+  if (!reducedMotion) fx.sparks(x, y, 22, '255, 205, 70');
+  const base = 'translate(-50%, -50%)';
+  return el
+    .animate(
+      [
+        { opacity: 0, transform: `${base} scale(0.6)` },
+        { opacity: 1, transform: `${base} scale(1.08)`, offset: 0.15 },
+        { opacity: 1, transform: `${base} scale(1)`, offset: 0.25 },
+        { opacity: 1, transform: `${base} translateY(-30px)`, offset: 0.75 },
+        { opacity: 0, transform: `${base} translateY(-60px)` },
+      ],
+      { duration: 1400, easing: 'ease-out', fill: 'forwards' },
+    )
+    .finished.then(() => el.remove());
 }
 
 function feet() {
@@ -757,10 +812,12 @@ async function playEntrance(p) {
       el.style.opacity = '1';
       el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 });
     }
+    greeting.style.opacity = '1';
   } else {
     await entranceFor(p).in(p);
     await wait(120);
     await popBubble();
+    if (!greeting.hidden) popGreeting();
   }
   stage.classList.add('live');
   if (!prop.hidden) prop.classList.add('offer');
@@ -802,7 +859,9 @@ async function leave(action) {
   doneBtn.disabled = true;
   snoozeBtn.disabled = true;
   stage.classList.remove('live');
+  const cheered = action === 'done' ? cheer() : null;
   await playExit(action);
+  await cheered; // let it finish before the window closes
   api[action]();
 }
 
