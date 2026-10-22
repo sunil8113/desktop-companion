@@ -73,7 +73,7 @@ function render(p) {
     // The creator's morning hello (a quote) or evening farewell (a fun line): no companion,
     // just their photo, the message and one button.
     stage.classList.add('hello');
-    if (!p.isFarewell) {
+    if (!p.isFarewell && !p.isUpdate) {
       const q = document.createElement('span');
       q.className = 'quote';
       q.textContent = p.reminder.message;
@@ -83,8 +83,13 @@ function render(p) {
       helloPhoto.src = p.creator.photo;
       helloPhoto.hidden = false;
     }
-    doneBtn.textContent = p.isFarewell ? `Bye, ${p.creator.name}! 👋` : `Thanks, ${p.creator.name}!`;
-    snoozeBtn.hidden = true;
+    if (p.isUpdate) {
+      doneBtn.textContent = 'Restart now';
+      snoozeBtn.textContent = 'Later';
+    } else {
+      doneBtn.textContent = p.isFarewell ? `Bye, ${p.creator.name}! 👋` : `Thanks, ${p.creator.name}!`;
+      snoozeBtn.hidden = true;
+    }
   }
 
   characterImg.src = p.characterSrc;

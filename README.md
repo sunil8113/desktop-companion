@@ -50,6 +50,7 @@ npm run demo       # same, plus a test reminder 1.5 s after launch
 npx electron . --demo=lunch   # demo one reminder by id: water, stand, lunch, home
 npx electron . --demo=greeting   # demo the morning hello (the day's quote)
 npx electron . --demo=farewell   # demo the evening goodbye (shown after Done on "Go home")
+npx electron . --demo=update     # demo the "update ready" bubble
 ```
 
 - **Left-click** the tray icon to open Settings.

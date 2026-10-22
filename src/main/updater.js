@@ -1,7 +1,8 @@
 // Updates from GitHub Releases (see "publish" in package.json). Only runs in the installed
 // app: checks on launch and every few hours. The tray's "Check for updates" reports the result.
 //
-// Windows: electron-updater downloads in the background and installs when the app quits.
+// Windows: electron-updater downloads in the background, then the app offers to restart (see
+// onReady); otherwise it installs when the app quits.
 // macOS: electron-updater only installs code-signed apps, and the Mac build isn't signed, so
 // there we look up the latest release and offer to open its download page instead.
 const { app, dialog, shell, net } = require('electron');
@@ -48,7 +49,12 @@ async function offerRestart() {
     defaultId: 0,
     cancelId: 1,
   });
-  if (response === 0) autoUpdater.quitAndInstall();
+  if (response === 0) restartToUpdate();
+}
+
+// Install the downloaded update silently and reopen the app.
+function restartToUpdate() {
+  autoUpdater.quitAndInstall(true, true);
 }
 
 // "1.10.0" > "1.9.2"
@@ -88,9 +94,12 @@ async function checkMac(isManual) {
   if (response === 0) shell.openExternal(RELEASES_PAGE);
 }
 
-function initUpdater() {
+// onReady(version): called once when an update has downloaded in the background (or is found
+// already downloaded at startup), so the app can offer to restart.
+function initUpdater({ onReady } = {}) {
   if (!app.isPackaged) return;
   if (!MAC) {
+    let readyShown = false;
     autoUpdater.autoDownload = true;
     autoUpdater.autoInstallOnAppQuit = true;
 
@@ -101,9 +110,11 @@ function initUpdater() {
       if (manual) message({ message: `You have the latest version (${app.getVersion()}).` });
       manual = false;
     });
-    autoUpdater.on('update-downloaded', () => {
+    autoUpdater.on('update-downloaded', (info) => {
       downloaded = true;
       if (manual) offerRestart();
+      else if (!readyShown) onReady?.(info.version);
+      readyShown = true;
       manual = false;
     });
     autoUpdater.on('error', (err) => {
@@ -117,4 +128,4 @@ function initUpdater() {
   setInterval(() => check(false), CHECK_EVERY);
 }
 
-module.exports = { initUpdater, checkForUpdates: () => check(true) };
+module.exports = { initUpdater, restartToUpdate, checkForUpdates: () => check(true) };
