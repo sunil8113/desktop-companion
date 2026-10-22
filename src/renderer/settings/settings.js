@@ -21,11 +21,10 @@ const els = {
   display: $('#display'),
   charPreview: $('#char-preview'),
   charChoice: $('#char-choice'),
-  customOptions: $('#custom-options'),
-  charPath: $('#char-path'),
-  charEntrance: $('#char-entrance'),
-  charStyle: $('#char-style'),
-  pickChar: $('#pick-char'),
+  images: $('#my-images'),
+  noImages: $('#no-images'),
+  imageTpl: $('#image-tpl'),
+  addImages: $('#add-images'),
   status: $('#status'),
   openFolder: $('#open-folder'),
   resetDefaults: $('#reset-defaults'),
@@ -41,6 +40,7 @@ let companions = []; // [{ id, name, url }]
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const isDirty = () => JSON.stringify(state) !== JSON.stringify(saved);
 const findReminder = (id) => state.reminders.find((r) => r.id === id);
+const findImage = (id) => state.myImages.find((i) => i.id === id);
 
 function setStatus(text, kind = '') {
   els.status.textContent = text;
@@ -56,6 +56,29 @@ function markChanged() {
 
 // ---------- rendering ----------
 
+// The built-in companions, then the user's own images in their own group.
+function companionOptions() {
+  const options = companions.map((c) => new Option(c.name, c.id));
+  if (state.myImages.length) {
+    const group = document.createElement('optgroup');
+    group.label = 'My images';
+    group.append(...state.myImages.map((i) => new Option(i.name || 'Untitled image', i.id)));
+    options.push(group);
+  }
+  return options;
+}
+
+// Rebuild every companion list (Character and each reminder) after images change.
+function renderCompanionChoices() {
+  els.charChoice.replaceChildren(...companionOptions());
+  els.charChoice.value = state.character;
+  for (const card of els.list.children) {
+    const select = card.querySelector('[data-role="companion"]');
+    select.replaceChildren(new Option('Default (from Character below)', ''), ...companionOptions());
+    select.value = findReminder(card.dataset.id).companion;
+  }
+}
+
 function buildCard(r) {
   const card = els.tpl.content.firstElementChild.cloneNode(true);
   card.dataset.id = r.id;
@@ -63,8 +86,7 @@ function buildCard(r) {
   card.classList.toggle('disabled', !r.enabled);
   card.querySelector('[data-role="companion"]').replaceChildren(
     new Option('Default (from Character below)', ''),
-    ...companions.map((c) => new Option(c.name, c.id)),
-    new Option('My own image', 'custom'),
+    ...companionOptions(),
   );
 
   for (const input of card.querySelectorAll('[data-field]')) {
@@ -105,24 +127,40 @@ function renderGeneral() {
   els.display.value = state.overlayDisplay;
 }
 
+function styleImage(img, style) {
+  img.classList.toggle('framed', style === 'frame');
+  img.classList.toggle('keyed', style === 'remove-dark');
+}
+
 async function renderCharacter() {
-  const custom = state.character === 'custom';
-  const p = state.characterImage;
+  els.charChoice.replaceChildren(...companionOptions());
   els.charChoice.value = state.character;
-  els.customOptions.hidden = !custom;
-  els.charPath.textContent = p || 'No image chosen yet. Until you choose one, the thunder god is used.';
-  els.charEntrance.value = state.customEntrance;
-  els.charStyle.value = state.characterStyle;
-  const style = custom ? state.characterStyle : 'plain';
-  els.charPreview.classList.toggle('framed', style === 'frame');
-  els.charPreview.classList.toggle('keyed', style === 'remove-dark');
+  const image = findImage(state.character);
+  styleImage(els.charPreview, image ? image.style : 'plain');
   const companion = companions.find((c) => c.id === state.character) || companions[0];
-  els.charPreview.src = custom && p ? await api.resolveImage(p) : companion.url;
+  els.charPreview.src = image ? await api.resolveImage(image.path) : companion.url;
+}
+
+function buildImageCard(image) {
+  const card = els.imageTpl.content.firstElementChild.cloneNode(true);
+  card.dataset.id = image.id;
+  for (const input of card.querySelectorAll('[data-field]')) input.value = image[input.dataset.field];
+  card.querySelector('[data-role="path"]').textContent = image.path;
+  const thumb = card.querySelector('[data-role="thumb"]');
+  styleImage(thumb, image.style);
+  api.resolveImage(image.path).then((url) => (thumb.src = url));
+  return card;
+}
+
+function renderImages() {
+  els.images.replaceChildren(...state.myImages.map(buildImageCard));
+  els.noImages.hidden = state.myImages.length > 0;
 }
 
 function render() {
   renderReminders();
   renderGeneral();
+  renderImages();
   renderCharacter();
   markChanged();
 }
@@ -233,20 +271,48 @@ els.charChoice.addEventListener('change', () => {
   renderCharacter();
   markChanged();
 });
-els.charEntrance.addEventListener('change', () => {
-  state.customEntrance = els.charEntrance.value;
+
+// ---------- my images ----------
+
+const fileTitle = (p) => p.split(/[\\/]/).pop().replace(/\.[^.]+$/, '').slice(0, 40);
+
+els.addImages.addEventListener('click', async () => {
+  const picked = await api.pickImages();
+  if (!picked.length) return;
+  const stamp = Date.now().toString(36);
+  picked.forEach((p, i) => {
+    state.myImages.push({ id: `img-${stamp}-${i}`, name: fileTitle(p.path) || 'My image', path: p.path, entrance: 'lightning', style: 'plain' });
+  });
+  renderImages();
+  renderCompanionChoices();
+  markChanged();
+  setStatus(`Added ${picked.length} image${picked.length > 1 ? 's' : ''}. Pick them as the companion above or on any reminder, then Save.`);
+});
+
+els.images.addEventListener('input', (e) => {
+  const field = e.target.dataset.field;
+  if (!field) return;
+  const image = findImage(e.target.closest('.image-card').dataset.id);
+  image[field] = e.target.value;
+  if (field === 'name') {
+    // Rename it everywhere it's listed, without rebuilding the lists (keeps focus here).
+    for (const option of document.querySelectorAll(`option[value="${image.id}"]`)) option.textContent = image.name || 'Untitled image';
+  } else if (field === 'style') {
+    styleImage(e.target.closest('.image-card').querySelector('[data-role="thumb"]'), image.style);
+    if (state.character === image.id) renderCharacter();
+  }
   markChanged();
 });
-els.pickChar.addEventListener('click', async () => {
-  const picked = await api.pickImage();
-  if (!picked) return;
-  state.character = 'custom';
-  state.characterImage = picked.path;
-  renderCharacter();
-  markChanged();
-});
-els.charStyle.addEventListener('change', () => {
-  state.characterStyle = els.charStyle.value;
+
+els.images.addEventListener('click', (e) => {
+  if (e.target.closest('[data-action]')?.dataset.action !== 'remove') return;
+  const id = e.target.closest('.image-card').dataset.id;
+  state.myImages = state.myImages.filter((i) => i.id !== id);
+  // Anything that used it goes back to the defaults.
+  if (state.character === id) state.character = 'thunder-god';
+  for (const r of state.reminders) if (r.companion === id) r.companion = '';
+  renderImages();
+  renderCompanionChoices();
   renderCharacter();
   markChanged();
 });
@@ -319,10 +385,6 @@ window.addEventListener('keydown', (e) => {
   const data = await api.load();
   defaults = data.defaults;
   companions = data.companions;
-  els.charChoice.replaceChildren(
-    ...companions.map((c) => new Option(c.name, c.id)),
-    new Option('My own image', 'custom'),
-  );
   saved = clone(data.config);
   state = clone(data.config);
   render();

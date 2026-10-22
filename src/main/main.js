@@ -21,21 +21,22 @@ function characterUrl(imagePath) {
   return fileUrl(imagePath && fs.existsSync(imagePath) ? imagePath : findCompanion('thunder-god').file);
 }
 
-// Everything the overlay needs to show the chosen companion. An unknown companion, or a
-// custom image whose file has gone missing, falls back to the thunder god.
-function resolveCharacter(c) {
-  const companion = c.character !== 'custom' && (findCompanion(c.character) || findCompanion('thunder-god'));
-  if (companion) {
-    return { characterSrc: fileUrl(companion.file), characterStyle: 'plain', characterData: null, entrance: companion.entrance, grip: companion.grip, hold: companion.hold };
+// Everything the overlay needs to show a companion: a built-in one or one of the user's
+// images, by id. An unknown id, or an image whose file has gone missing, falls back to the
+// thunder god.
+function resolveCharacter(id, cfg) {
+  const image = cfg.myImages.find((i) => i.id === id);
+  if (image && fs.existsSync(image.path)) {
+    return {
+      characterSrc: fileUrl(image.path),
+      characterStyle: image.style,
+      characterData: image.style === 'remove-dark' ? characterBytes(image.path) : null,
+      entrance: image.entrance,
+      ...CUSTOM_DEFAULTS,
+    };
   }
-  if (!c.characterImage || !fs.existsSync(c.characterImage)) return resolveCharacter({ ...c, character: 'thunder-god' });
-  return {
-    characterSrc: fileUrl(c.characterImage),
-    characterStyle: c.characterStyle,
-    characterData: c.characterStyle === 'remove-dark' ? characterBytes(c.characterImage) : null,
-    entrance: c.customEntrance,
-    ...CUSTOM_DEFAULTS,
-  };
+  const companion = (!image && findCompanion(id)) || findCompanion('thunder-god');
+  return { characterSrc: fileUrl(companion.file), characterStyle: 'plain', characterData: null, entrance: companion.entrance, grip: companion.grip, hold: companion.hold };
 }
 
 // The app's creator, who signs every reminder and says hello once a day.
@@ -249,14 +250,14 @@ function registerIpc() {
     return saved;
   }));
 
-  ipcMain.handle('settings:pick-image', fromSettings(async () => {
+  ipcMain.handle('settings:pick-images', fromSettings(async () => {
     const result = await dialog.showOpenDialog(settingsWindow.windowFor(), {
-      title: 'Choose a character image',
-      properties: ['openFile'],
+      title: 'Add your own companion images',
+      properties: ['openFile', 'multiSelections'],
       filters: [{ name: 'Images', extensions: ['png', 'gif', 'webp', 'svg', 'jpg', 'jpeg', 'apng'] }],
     });
-    if (result.canceled || !result.filePaths[0]) return null;
-    return { path: result.filePaths[0], url: characterUrl(result.filePaths[0]) };
+    if (result.canceled) return [];
+    return result.filePaths.map((p) => ({ path: p, url: characterUrl(p) }));
   }));
 
   ipcMain.handle('settings:resolve-image', fromSettings((_e, imagePath) => characterUrl(imagePath)));
@@ -289,14 +290,13 @@ function init() {
     getDisplayMode: () => config.get().overlayDisplay,
     getExtras: (reminder) => {
       const c = config.get();
-      const look = reminder.companion ? { ...c, character: reminder.companion } : c;
       return {
         snoozeMinutes: c.snoozeMinutes,
         soundEnabled: c.soundEnabled,
         thunderSrc: thunderUrl(),
         prop: propFor(reminder),
         creator: creator(),
-        ...resolveCharacter(look),
+        ...resolveCharacter(reminder.companion || c.character, c),
       };
     },
   });

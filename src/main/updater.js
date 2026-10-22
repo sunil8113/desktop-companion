@@ -8,7 +8,7 @@
 const { app, dialog, shell, net } = require('electron');
 const { autoUpdater } = require('electron-updater');
 
-const CHECK_EVERY = 6 * 60 * 60 * 1000;
+const CHECK_EVERY = 60 * 60 * 1000;
 const FIRST_CHECK_DELAY = 30 * 1000;
 const MAC = process.platform === 'darwin';
 const RELEASES_PAGE = 'https://github.com/sunil8113/desktop-companion/releases/latest';

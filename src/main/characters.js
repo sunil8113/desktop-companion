@@ -125,8 +125,9 @@ function loadLocal() {
 // Built-in companions plus any local ones, re-read each time so edits to
 // characters.json show up without restarting the app.
 function companions() {
+  // 'custom' and 'img-…' ids belong to the user's own images (config myImages).
   const seen = new Set(BUILT_IN.map((c) => c.id).concat('custom'));
-  return BUILT_IN.concat(loadLocal().filter((c) => !seen.has(c.id) && seen.add(c.id)));
+  return BUILT_IN.concat(loadLocal().filter((c) => !c.id.startsWith('img-') && !seen.has(c.id) && seen.add(c.id)));
 }
 
 const findCompanion = (id) => companions().find((c) => c.id === id);

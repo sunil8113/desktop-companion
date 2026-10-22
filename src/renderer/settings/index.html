@@ -64,37 +64,16 @@
             <select id="char-choice"></select>
           </label>
           <p class="hint">This is the default. Each reminder can pick its own companion and what it holds (water bottle, lunch box) on its card above.</p>
-          <div id="custom-options" hidden>
-            <p id="char-path" class="muted"></p>
-            <div class="buttons frame-option">
-              <button type="button" class="secondary" id="pick-char">Choose image…</button>
-            </div>
-            <p class="hint">PNG, GIF, WebP or SVG with a transparent background works best. About 220px wide is shown on screen. For the web swing, grapple and zip line, the line attaches to the top centre of the image.</p>
-            <label class="frame-option">
-              <span class="label">Entrance</span>
-              <select id="char-entrance">
-                <option value="lightning">Lightning strike</option>
-                <option value="swing">Swing in on a web</option>
-                <option value="dash">Dash in on a lightning trail</option>
-                <option value="jet">Fly down on jet boots</option>
-                <option value="swoop">Swoop down from the sky</option>
-                <option value="grapple">Drop in on a grapple line</option>
-                <option value="portal">Step out of a magic portal</option>
-                <option value="zipline">Zip down a line from an arrow</option>
-                <option value="spout">Rise on a water spout</option>
-              </select>
-            </label>
-            <label class="frame-option">
-              <span class="label">Background</span>
-              <select id="char-style">
-                <option value="plain">Keep as is (image is already transparent)</option>
-                <option value="remove-dark">Remove dark background (clips shot on black)</option>
-                <option value="frame">Show in a glowing frame</option>
-              </select>
-            </label>
-          </div>
         </div>
       </div>
+
+      <div class="section-head my-images-head">
+        <h2>My images</h2>
+        <button type="button" class="secondary" id="add-images">+ Add images…</button>
+      </div>
+      <div id="my-images"></div>
+      <p id="no-images" class="empty" hidden>No images yet. Add as many as you like, then pick them as the companion above or on any reminder.</p>
+      <p class="hint">PNG, GIF, WebP or SVG with a transparent background works best. About 220px wide is shown on screen. For the web swing, grapple and zip line, the line attaches to the top centre of the image.</p>
     </section>
   </main>
 
@@ -147,6 +126,43 @@
             <option value="none">Nothing</option>
           </select>
         </label>
+      </div>
+    </article>
+  </template>
+
+  <template id="image-tpl">
+    <article class="card image-card">
+      <div class="thumb"><img data-role="thumb" alt=""></div>
+      <div class="image-fields">
+        <header>
+          <input class="title-input" data-field="name" maxlength="40" placeholder="Name" aria-label="Image name" title="Click to rename">
+          <button type="button" class="ghost small danger" data-action="remove" title="Remove image" aria-label="Remove image">✕</button>
+        </header>
+        <div class="row">
+          <label class="field">
+            <span>Entrance</span>
+            <select data-field="entrance">
+              <option value="lightning">Lightning strike</option>
+              <option value="swing">Swing in on a web</option>
+              <option value="dash">Dash in on a lightning trail</option>
+              <option value="jet">Fly down on jet boots</option>
+              <option value="swoop">Swoop down from the sky</option>
+              <option value="grapple">Drop in on a grapple line</option>
+              <option value="portal">Step out of a magic portal</option>
+              <option value="zipline">Zip down a line from an arrow</option>
+              <option value="spout">Rise on a water spout</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Background</span>
+            <select data-field="style">
+              <option value="plain">Keep as is (already transparent)</option>
+              <option value="remove-dark">Remove dark background</option>
+              <option value="frame">Show in a glowing frame</option>
+            </select>
+          </label>
+        </div>
+        <p class="muted image-path" data-role="path"></p>
       </div>
     </article>
   </template>

@@ -1,7 +1,7 @@
 {
   "name": "desk-companion",
   "productName": "Desk Companion",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Tray companion that reminds you to drink water, move, eat and go home.",
   "main": "src/main/main.js",
   "author": "sunil8113",
