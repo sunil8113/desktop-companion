@@ -33,7 +33,7 @@ const text = (value, max) => (typeof value === 'string' && value.trim() ? value.
 
 // Validates and tidies a quotes file; throws if it isn't usable.
 function parse(raw) {
-  const data = JSON.parse(raw);
+  const data = JSON.parse(raw.replace(/^﻿/, '')); // some editors add a byte-order mark
   const days = {};
   const specials = {};
   for (const [key, v] of Object.entries(data?.days || {})) {
