@@ -70,19 +70,20 @@ function render(p) {
   snoozeBtn.textContent = `Snooze ${p.snoozeMinutes} min`;
   signature.textContent = `— ${p.creator.name} ✨`;
   if (p.isGreeting) {
-    // The daily hello: no companion, just the creator's photo, the message and a thank-you.
+    // The creator's morning hello (a quote) or evening farewell (a fun line): no companion,
+    // just their photo, the message and one button.
     stage.classList.add('hello');
-    // "“quote”\n\nfun line": set the quote apart.
-    const [quote, ...rest] = p.reminder.message.split('\n\n');
-    const q = document.createElement('span');
-    q.className = 'quote';
-    q.textContent = quote;
-    message.replaceChildren(q, rest.length ? `\n\n${rest.join('\n\n')}` : '');
+    if (!p.isFarewell) {
+      const q = document.createElement('span');
+      q.className = 'quote';
+      q.textContent = p.reminder.message;
+      message.replaceChildren(q);
+    }
     if (p.creator.photo) {
       helloPhoto.src = p.creator.photo;
       helloPhoto.hidden = false;
     }
-    doneBtn.textContent = `Thanks, ${p.creator.name}!`;
+    doneBtn.textContent = p.isFarewell ? `Bye, ${p.creator.name}! 👋` : `Thanks, ${p.creator.name}!`;
     snoozeBtn.hidden = true;
   }
 

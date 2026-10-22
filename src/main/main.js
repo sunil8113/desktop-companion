@@ -81,7 +81,8 @@ function takeDailyGreeting() {
   return greetingText(now);
 }
 
-// A motivational quote for each day of the week (Date#getDay(): 0 = Sunday), with a fun line.
+// For each day of the week (Date#getDay(): 0 = Sunday): a motivational quote for the morning
+// hello, and a fun line for the evening farewell (shown with the "Go home" reminder).
 const GREETINGS = [
   {
     day: 'Sunday',
@@ -130,7 +131,16 @@ const GREETINGS = [
 function greetingText(now = new Date()) {
   const g = GREETINGS[now.getDay()];
   const title = now.getHours() < 12 ? `Good morning! Happy ${g.day} ${g.emoji}` : `Happy ${g.day}! ${g.emoji}`;
-  return { title, message: `“${g.quote}”\n\n${g.vibe}` };
+  return { title, message: `“${g.quote}”` };
+}
+
+// Clicking Done on the "Go home" reminder brings the creator's farewell for the day.
+const FAREWELL_AFTER_ID = 'home';
+
+function showFarewell(now = new Date()) {
+  const g = GREETINGS[now.getDay()];
+  const bye = { id: 'creator-farewell', type: 'greeting', title: `That's a wrap on ${g.day}! 🌙`, message: g.vibe, companion: '', prop: 'none' };
+  presenter.enqueue(bye, { isGreeting: true, isFarewell: true });
 }
 
 // Optional custom thunder: assets/sounds/thunder.(mp3|ogg|wav). Otherwise the overlay synthesises one.
@@ -283,7 +293,9 @@ function init() {
     presenter.enqueue(reminder, meta);
   });
   presenter.on('done', ({ reminder, meta }) => {
-    if (!meta.isTest && !meta.isGreeting) scheduler.acknowledge(reminder.id);
+    if (meta.isGreeting) return;
+    if (!meta.isTest) scheduler.acknowledge(reminder.id);
+    if (reminder.id === FAREWELL_AFTER_ID) showFarewell();
   });
   presenter.on('snooze', ({ reminder, meta }) => {
     if (!meta.isTest) scheduler.snooze(reminder.id, config.get().snoozeMinutes);
@@ -313,11 +325,12 @@ function init() {
   applyLoginItem(cfg);
   if (config.isFirstRun()) settingsWindow.open();
   // --demo shows the first reminder, --demo=<reminder id> (e.g. --demo=lunch) a specific one,
-  // and --demo=greeting the creator's hello.
+  // --demo=greeting the creator's morning hello and --demo=farewell the evening one.
   const demo = process.argv.find((a) => a === '--demo' || a.startsWith('--demo='));
   if (demo) {
     const id = demo.split('=')[1];
     if (id === 'greeting') setTimeout(() => showGreeting(greetingText()), 1500);
+    else if (id === 'farewell') setTimeout(() => showFarewell(), 1500);
     else setTimeout(() => showTestReminder(id && config.get().reminders.find((r) => r.id === id)), 1500);
   } else {
     // Started at sign-in (or by hand): say hello once the desktop has settled.
