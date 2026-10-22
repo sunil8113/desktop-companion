@@ -42,7 +42,7 @@ function resolveCharacter(c) {
 const CREATOR_NAME = 'Sunil';
 
 function creator() {
-  return { name: CREATOR_NAME, photo: fs.existsSync(paths.creatorPhoto) ? fileUrl(paths.creatorPhoto) : '' };
+  return { name: CREATOR_NAME };
 }
 
 // Once a day the creator says hello: when the app starts (usually at sign-in), when the PC is
@@ -79,10 +79,19 @@ function takeDailyGreeting() {
   return greetingText(now);
 }
 
+// A different hello for each day of the week (Date#getDay(): 0 = Sunday).
+const GREETINGS = [
+  { title: 'Happy Sunday! ☀️', message: 'Recharge mode: ON. Sip some water, stretch a little and enjoy doing nothing, guilt-free.' },
+  { title: 'Hello, Monday! 💪', message: "New week, new wins. You've got this, and I've got your water breaks covered." },
+  { title: 'Terrific Tuesday! 🚀', message: 'Monday survived. Today we fly! (Snacks are allowed.)' },
+  { title: 'Happy Wednesday! 🐪', message: 'Halfway to the weekend! Stand up, stretch and give yourself a high five.' },
+  { title: 'Thunder Thursday! ⚡', message: 'Almost Friday... keep the energy up and the water bottle close.' },
+  { title: "It's Friday! 🎉", message: 'Finish strong, then go do something fun. You earned it!' },
+  { title: 'Super Saturday! 🌈', message: 'No meetings, just good vibes. And yes, water still counts on weekends.' },
+];
+
 function greetingText(now = new Date()) {
-  const hour = now.getHours();
-  const hello = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  return { title: `${hello}! 👋`, message: 'Hope you have a wonderful day.' };
+  return GREETINGS[now.getDay()];
 }
 
 // Optional custom thunder: assets/sounds/thunder.(mp3|ogg|wav). Otherwise the overlay synthesises one.

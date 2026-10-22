@@ -17,7 +17,6 @@ const bubble = $('bubble');
 const doneBtn = $('done');
 const snoozeBtn = $('snooze');
 const signature = $('signature');
-const helloPhoto = $('hello-photo');
 
 const fx = window.Lightning.createFx($('fx'));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -70,11 +69,8 @@ function render(p) {
   snoozeBtn.textContent = `Snooze ${p.snoozeMinutes} min`;
   signature.textContent = `— ${p.creator.name} ✨`;
   if (p.isGreeting) {
-    // The daily hello: the creator's photo, and a single button to say thanks.
-    if (p.creator.photo) {
-      helloPhoto.src = p.creator.photo;
-      helloPhoto.hidden = false;
-    }
+    // The daily hello: just the message and a single button to say thanks.
+    stage.classList.add('hello');
     doneBtn.textContent = `Thanks, ${p.creator.name}!`;
     snoozeBtn.hidden = true;
   }
@@ -801,6 +797,17 @@ async function playEntrance(p) {
       el.style.opacity = '1';
       el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 });
     }
+  } else if (p.isGreeting) {
+    // No companion: the bubble rises into the corner on its own.
+    bubble.style.opacity = '1';
+    await bubble.animate(
+      [
+        { opacity: 0, transform: 'translateY(40px) scale(0.9)' },
+        { opacity: 1, transform: 'translateY(-6px) scale(1.02)', offset: 0.7 },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 450, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)', fill: 'backwards' },
+    ).finished;
   } else {
     await entranceFor(p).in(p);
     await wait(120);
@@ -826,6 +833,14 @@ function handOverProp() {
 async function playExit(action) {
   if (reducedMotion) {
     await stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'forwards' }).finished;
+    return;
+  }
+  if (payload.isGreeting) {
+    await bubble.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(30px) scale(0.9)' }], {
+      duration: 260,
+      easing: 'ease-in',
+      fill: 'forwards',
+    }).finished;
     return;
   }
   bubble.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(0.8)' }], {
