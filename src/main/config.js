@@ -53,12 +53,12 @@ const DEFAULTS = {
   snoozeMinutes: 10,
   // When enabled, repeating reminders only fire between start and end. Daily reminders ignore this.
   workHours: { enabled: false, start: '09:00', end: '18:00' },
-  character: 'thunder-god', // a companion id (see characters.js) or 'custom' (characterImage)
-  characterImage: '',
-  // How to show the character: 'plain' (image as is), 'remove-dark' (key out a dark
-  // background, for clips shot on black) or 'frame' (rounded card with a glow).
-  characterStyle: 'plain',
-  customEntrance: 'lightning', // how a custom image arrives: one of ENTRANCES (characters.js)
+  character: 'thunder-god', // a companion id (see characters.js) or the id of one of myImages
+  // The user's own pictures, any number: { id: 'img-…', name, path, entrance, style }.
+  //   entrance: one of ENTRANCES (characters.js)
+  //   style:    'plain' (image as is), 'remove-dark' (key out a dark background, for clips
+  //             shot on black) or 'frame' (rounded card with a glow)
+  myImages: [],
   soundEnabled: true,
   launchAtLogin: true, // so reminders (and the daily hello) start with Windows / macOS
   overlayDisplay: 'primary', // 'primary' or 'cursor' (the display the mouse is on)
@@ -90,7 +90,8 @@ function normalizeReminder(raw, index = 0) {
     title: str(raw.title, '', 60).trim() || 'Reminder',
     message: str(raw.message, '', 280),
     days,
-    // '' = the companion chosen under Settings > Character; otherwise a companion id or 'custom'
+    // '' = the companion chosen under Settings > Character; otherwise a companion id or the
+    // id of one of myImages
     companion: typeof raw.companion === 'string' && ID_RE.test(raw.companion) ? raw.companion : '',
     // what the companion holds out; 'auto' picks from the title (water -> bottle, lunch -> tiffin)
     prop: PROPS.includes(raw.prop) ? raw.prop : 'auto',
@@ -100,18 +101,56 @@ function normalizeReminder(raw, index = 0) {
   return reminder;
 }
 
+const IMAGE_ID_RE = /^img-[\w-]{1,60}$/;
+
+function normalizeImage(raw, index = 0) {
+  if (!raw || typeof raw !== 'object' || typeof raw.path !== 'string' || !raw.path) return null;
+  return {
+    id: typeof raw.id === 'string' && IMAGE_ID_RE.test(raw.id) ? raw.id : `img-${Date.now().toString(36)}-${index}`,
+    name: str(raw.name, '', 40).trim() || `My image ${index + 1}`,
+    path: str(raw.path, '', 1024),
+    entrance: ENTRANCES.includes(raw.entrance) ? raw.entrance : 'lightning',
+    style: CHARACTER_STYLES.includes(raw.style) ? raw.style : 'plain',
+  };
+}
+
+// Unique ids: the second "x" becomes "x-2", and so on.
+function dedupe(items) {
+  const seen = new Set();
+  return items.map((item) => {
+    let id = item.id;
+    for (let i = 2; seen.has(id); i++) id = `${item.id}-${i}`;
+    seen.add(id);
+    return { ...item, id };
+  });
+}
+
 function normalize(raw) {
   const src = raw && typeof raw === 'object' ? raw : {};
-  const seen = new Set();
-  const reminders = (Array.isArray(src.reminders) ? src.reminders : DEFAULTS.reminders)
-    .map(normalizeReminder)
-    .filter(Boolean)
-    .map((r) => {
-      let id = r.id;
-      for (let i = 2; seen.has(id); i++) id = `${r.id}-${i}`;
-      seen.add(id);
-      return { ...r, id };
-    });
+
+  // Settings from before "My images" had one custom image (character 'custom' plus
+  // characterImage, characterStyle, customEntrance): it becomes the first of myImages.
+  const legacy = !Array.isArray(src.myImages) && typeof src.characterImage === 'string' && src.characterImage
+    ? {
+        id: 'img-1',
+        name: 'My image',
+        path: src.characterImage,
+        entrance: src.customEntrance,
+        style: src.characterStyle || (src.characterFrame === true ? 'frame' : 'plain'),
+      }
+    : null;
+  const myImages = dedupe((legacy ? [legacy] : Array.isArray(src.myImages) ? src.myImages : []).map(normalizeImage).filter(Boolean));
+  const imageIds = new Set(myImages.map((i) => i.id));
+  // A companion id as stored: 'custom' means the legacy image; a deleted image falls back.
+  const companionId = (id, fallback) => {
+    if (id === 'custom') return legacy ? legacy.id : fallback;
+    if (typeof id !== 'string' || !ID_RE.test(id)) return fallback;
+    return id.startsWith('img-') && !imageIds.has(id) ? fallback : id;
+  };
+
+  const reminders = dedupe(
+    (Array.isArray(src.reminders) ? src.reminders : DEFAULTS.reminders).map(normalizeReminder).filter(Boolean),
+  ).map((r) => ({ ...r, companion: companionId(r.companion, '') }));
   const wh = src.workHours && typeof src.workHours === 'object' ? src.workHours : {};
   return {
     version: 1,
@@ -122,12 +161,8 @@ function normalize(raw) {
       start: time(wh.start, DEFAULTS.workHours.start),
       end: time(wh.end, DEFAULTS.workHours.end),
     },
-    character: typeof src.character === 'string' && ID_RE.test(src.character) ? src.character : src.characterImage ? 'custom' : 'thunder-god',
-    characterImage: str(src.characterImage, '', 1024),
-    characterStyle: CHARACTER_STYLES.includes(src.characterStyle)
-      ? src.characterStyle
-      : src.characterFrame === true ? 'frame' : 'plain',
-    customEntrance: ENTRANCES.includes(src.customEntrance) ? src.customEntrance : 'lightning',
+    character: companionId(src.character, 'thunder-god'),
+    myImages,
     soundEnabled: src.soundEnabled !== false,
     launchAtLogin: src.launchAtLogin === true,
     overlayDisplay: src.overlayDisplay === 'cursor' ? 'cursor' : 'primary',

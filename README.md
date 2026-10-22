@@ -100,9 +100,11 @@ Pick a companion in **Settings → Character**:
   zips down, then gets pulled back up it.
 - **Ocean king:** rides a water spout up from the bottom of the screen, is lowered onto
   his spot as it drains away in a splash, then sinks back down into the water.
-- **My own image:** any PNG, GIF, WebP or SVG, shown about 220px wide. You can give it any of
-  the entrances above. For the web swing, grapple and zip line, the line attaches to the top
-  centre of the image.
+- **My images:** add as many of your own pictures as you like under **Settings → Character →
+  My images** (PNG, GIF, WebP or SVG, shown about 220px wide). Give each a name (click it to
+  rename), an entrance from the list above and a background style, then pick it as the default
+  companion or on any reminder, so every reminder can have its own. For the web swing,
+  grapple and zip line, the line attaches to the top centre of the image.
 
 All the built-in companions are original artwork in `assets/character/`.
 
@@ -131,8 +133,8 @@ it and crop to the character.
 For water reminders the companion holds out a water bottle, and hands it to you when you click
 **Done**. The art is in `assets/character/` and `assets/props/`.
 
-If your image or GIF has no transparent background, change **Background** under
-**Settings → Character**:
+If your image or GIF has no transparent background, change its **Background** under
+**Settings → Character → My images**:
 - **Remove dark background:** for clips shot on black. Dark pixels become transparent, so only
   the bright parts (lightning, glowing weapons, highlights) float over the desktop.
 - **Show in a glowing frame:** shows the image as a rounded card with a blue glow.
