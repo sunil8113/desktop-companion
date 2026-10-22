@@ -9,7 +9,7 @@ const { Scheduler } = require('./scheduler');
 const { OverlayPresenter } = require('./overlay-window');
 const { createTray } = require('./tray');
 const settingsWindow = require('./settings-window');
-const { initUpdater, checkForUpdates } = require('./updater');
+const { initUpdater, restartToUpdate, checkForUpdates } = require('./updater');
 
 let scheduler;
 let presenter;
@@ -132,6 +132,19 @@ function greetingText(now = new Date()) {
   const g = GREETINGS[now.getDay()];
   const title = now.getHours() < 12 ? `Good morning! Happy ${g.day} ${g.emoji}` : `Happy ${g.day}! ${g.emoji}`;
   return { title, message: `“${g.quote}”` };
+}
+
+// When an update has downloaded, a bubble like the hello offers to restart into it.
+function showUpdateReady(version, extraMeta = {}) {
+  const ready = {
+    id: 'creator-update',
+    type: 'greeting',
+    title: 'New update ready! 🚀',
+    message: `Desk Companion ${version} is downloaded. Restart now to get the latest features.`,
+    companion: '',
+    prop: 'none',
+  };
+  presenter.enqueue(ready, { isGreeting: true, isUpdate: true, ...extraMeta });
 }
 
 // Clicking Done on the "Go home" reminder brings the creator's farewell for the day.
@@ -293,11 +306,13 @@ function init() {
     presenter.enqueue(reminder, meta);
   });
   presenter.on('done', ({ reminder, meta }) => {
+    if (meta.isUpdate && !meta.isTest) restartToUpdate();
     if (meta.isGreeting) return;
     if (!meta.isTest) scheduler.acknowledge(reminder.id);
     if (reminder.id === FAREWELL_AFTER_ID) showFarewell();
   });
   presenter.on('snooze', ({ reminder, meta }) => {
+    if (meta.isGreeting) return; // "Later" on the update bubble: it installs when the app quits
     if (!meta.isTest) scheduler.snooze(reminder.id, config.get().snoozeMinutes);
   });
 
@@ -311,7 +326,7 @@ function init() {
     onCheckUpdates: checkForUpdates,
     onQuit: () => app.quit(),
   });
-  initUpdater();
+  initUpdater({ onReady: showUpdateReady });
 
   powerMonitor.on('resume', () => {
     scheduler.resetIntervals();
@@ -325,12 +340,14 @@ function init() {
   applyLoginItem(cfg);
   if (config.isFirstRun()) settingsWindow.open();
   // --demo shows the first reminder, --demo=<reminder id> (e.g. --demo=lunch) a specific one,
-  // --demo=greeting the creator's morning hello and --demo=farewell the evening one.
+  // --demo=greeting the creator's morning hello, --demo=farewell the evening one and
+  // --demo=update the "update ready" bubble.
   const demo = process.argv.find((a) => a === '--demo' || a.startsWith('--demo='));
   if (demo) {
     const id = demo.split('=')[1];
     if (id === 'greeting') setTimeout(() => showGreeting(greetingText()), 1500);
     else if (id === 'farewell') setTimeout(() => showFarewell(), 1500);
+    else if (id === 'update') setTimeout(() => showUpdateReady(app.getVersion(), { isTest: true }), 1500);
     else setTimeout(() => showTestReminder(id && config.get().reminders.find((r) => r.id === id)), 1500);
   } else {
     // Started at sign-in (or by hand): say hello once the desktop has settled.

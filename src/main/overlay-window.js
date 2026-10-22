@@ -71,7 +71,8 @@ class OverlayPresenter extends EventEmitter {
       isTest: Boolean(item.meta.isTest),
       snoozed: Boolean(item.meta.snoozed),
       isGreeting: Boolean(item.meta.isGreeting), // the creator's daily hello, not a reminder
-      isFarewell: Boolean(item.meta.isFarewell), // the "Go home" reminder as the creator's goodbye
+      isFarewell: Boolean(item.meta.isFarewell), // the creator's goodbye after "Go home"
+      isUpdate: Boolean(item.meta.isUpdate), // an update has downloaded: offer to restart
       // Space the taskbar takes up, so the character stands on top of it.
       insets: {
         bottom: bounds.y + bounds.height - (workArea.y + workArea.height),
