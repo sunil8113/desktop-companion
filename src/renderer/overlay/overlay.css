@@ -124,18 +124,10 @@ html, body {
   color: var(--muted);
 }
 
-/* The creator's daily hello: their photo at the top of the bubble. */
-#hello-photo {
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 0 0 10px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--accent);
-  box-shadow: 0 6px 16px rgba(5, 20, 60, 0.25);
-}
-#hello-photo[hidden] { display: none; }
+/* The creator's daily hello: just the bubble, in the corner, with no companion. */
+#stage.hello #actor { display: none; }
+#stage.hello #bubble { margin-bottom: 0; transform-origin: 100% 100%; }
+#stage.hello #bubble::after { display: none; }
 
 .cheer .from {
   font-family: var(--signature-font);

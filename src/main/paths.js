@@ -9,7 +9,6 @@ module.exports = {
   ROOT,
   trayIcon: path.join(ASSETS, 'tray.png'),
   appIcon: path.join(ASSETS, 'icon.png'),
-  creatorPhoto: path.join(ASSETS, 'creator.jpg'),
   sounds: path.join(ASSETS, 'sounds'),
   characters: path.join(ASSETS, 'character'),
   // The installed app keeps personal companions in <userData> so they survive updates.
