@@ -17,8 +17,7 @@ const bubble = $('bubble');
 const doneBtn = $('done');
 const snoozeBtn = $('snooze');
 const signature = $('signature');
-const greeting = $('greeting');
-const greetingPhoto = $('greeting-photo');
+const helloPhoto = $('hello-photo');
 
 const fx = window.Lightning.createFx($('fx'));
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -70,12 +69,14 @@ function render(p) {
   message.textContent = p.reminder.message;
   snoozeBtn.textContent = `Snooze ${p.snoozeMinutes} min`;
   signature.textContent = `— ${p.creator.name} ✨`;
-  if (p.greeting) {
-    $('greeting-text').textContent = p.greeting;
-    greeting.querySelector('.greeting-from').textContent = `— ${p.creator.name}`;
-    greetingPhoto.hidden = !p.creator.photo;
-    if (p.creator.photo) greetingPhoto.src = p.creator.photo;
-    greeting.hidden = false;
+  if (p.isGreeting) {
+    // The daily hello: the creator's photo, and a single button to say thanks.
+    if (p.creator.photo) {
+      helloPhoto.src = p.creator.photo;
+      helloPhoto.hidden = false;
+    }
+    doneBtn.textContent = `Thanks, ${p.creator.name}!`;
+    snoozeBtn.hidden = true;
   }
 
   characterImg.src = p.characterSrc;
@@ -147,18 +148,6 @@ function popBubble() {
     ],
     { duration: 320, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)', fill: 'backwards' },
   ).finished;
-}
-
-function popGreeting() {
-  greeting.style.opacity = '1';
-  greeting.animate(
-    [
-      { opacity: 0, transform: 'translateY(10px) scale(0.5)' },
-      { opacity: 1, transform: 'scale(1.06)', offset: 0.7 },
-      { opacity: 1, transform: 'none' },
-    ],
-    { duration: 360, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)', fill: 'backwards' },
-  );
 }
 
 // "Great job! — name" floating up from the bubble when you click Done.
@@ -812,12 +801,10 @@ async function playEntrance(p) {
       el.style.opacity = '1';
       el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 250 });
     }
-    greeting.style.opacity = '1';
   } else {
     await entranceFor(p).in(p);
     await wait(120);
     await popBubble();
-    if (!greeting.hidden) popGreeting();
   }
   stage.classList.add('live');
   if (!prop.hidden) prop.classList.add('offer');
@@ -859,7 +846,7 @@ async function leave(action) {
   doneBtn.disabled = true;
   snoozeBtn.disabled = true;
   stage.classList.remove('live');
-  const cheered = action === 'done' ? cheer() : null;
+  const cheered = action === 'done' && !payload.isGreeting ? cheer() : null;
   await playExit(action);
   await cheered; // let it finish before the window closes
   api[action]();

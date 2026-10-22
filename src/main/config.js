@@ -60,7 +60,7 @@ const DEFAULTS = {
   characterStyle: 'plain',
   customEntrance: 'lightning', // how a custom image arrives: one of ENTRANCES (characters.js)
   soundEnabled: true,
-  launchAtLogin: false,
+  launchAtLogin: true, // so reminders (and the daily hello) start with Windows / macOS
   overlayDisplay: 'primary', // 'primary' or 'cursor' (the display the mouse is on)
 };
 

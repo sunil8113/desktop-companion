@@ -48,6 +48,7 @@ npm install
 npm start          # runs in the system tray
 npm run demo       # same, plus a test reminder 1.5 s after launch
 npx electron . --demo=lunch   # demo one reminder by id: water, stand, lunch, home
+npx electron . --demo=greeting   # demo the daily hello
 ```
 
 - **Left-click** the tray icon to open Settings.
