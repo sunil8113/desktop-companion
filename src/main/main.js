@@ -45,9 +45,21 @@ function creator() {
   return { name: CREATOR_NAME, photo: fs.existsSync(paths.creatorPhoto) ? fileUrl(paths.creatorPhoto) : '' };
 }
 
-// The first reminder each day comes with a greeting from the creator. The day it was last
-// shown is kept in <userData>/state.json.
+// Once a day the creator says hello: when the app starts (usually at sign-in), when the PC is
+// unlocked or wakes up, or just before the day's first reminder, whichever comes first.
+// The day it was last shown is kept in <userData>/state.json.
 const statePath = () => path.join(app.getPath('userData'), 'state.json');
+const GREETING_ID = 'creator-greeting';
+
+function greetIfNewDay() {
+  const text = takeDailyGreeting();
+  if (text) showGreeting(text);
+}
+
+function showGreeting(text) {
+  const greeting = config.normalizeReminder({ id: GREETING_ID, title: text.title, message: text.message, prop: 'none' });
+  presenter.enqueue(greeting, { isGreeting: true });
+}
 
 function takeDailyGreeting() {
   const now = new Date();
@@ -64,9 +76,13 @@ function takeDailyGreeting() {
   } catch (err) {
     console.warn('[greeting] could not save state:', err.message);
   }
+  return greetingText(now);
+}
+
+function greetingText(now = new Date()) {
   const hour = now.getHours();
   const hello = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  return `${hello}! Hope you have a wonderful day.`;
+  return { title: `${hello}! 👋`, message: 'Hope you have a wonderful day.' };
 }
 
 // Optional custom thunder: assets/sounds/thunder.(mp3|ogg|wav). Otherwise the overlay synthesises one.
@@ -209,15 +225,17 @@ function init() {
         thunderSrc: thunderUrl(),
         prop: propFor(reminder),
         creator: creator(),
-        greeting: takeDailyGreeting(),
         ...resolveCharacter(look),
       };
     },
   });
 
-  scheduler.on('due', (reminder, meta) => presenter.enqueue(reminder, meta));
+  scheduler.on('due', (reminder, meta) => {
+    greetIfNewDay(); // not greeted yet today (e.g. the PC stayed unlocked overnight): hello first
+    presenter.enqueue(reminder, meta);
+  });
   presenter.on('done', ({ reminder, meta }) => {
-    if (!meta.isTest) scheduler.acknowledge(reminder.id);
+    if (!meta.isTest && !meta.isGreeting) scheduler.acknowledge(reminder.id);
   });
   presenter.on('snooze', ({ reminder, meta }) => {
     if (!meta.isTest) scheduler.snooze(reminder.id, config.get().snoozeMinutes);
@@ -235,16 +253,27 @@ function init() {
   });
   initUpdater();
 
-  powerMonitor.on('resume', () => scheduler.resetIntervals());
-  powerMonitor.on('unlock-screen', () => scheduler.resetIntervals());
+  powerMonitor.on('resume', () => {
+    scheduler.resetIntervals();
+    greetIfNewDay();
+  });
+  powerMonitor.on('unlock-screen', () => {
+    scheduler.resetIntervals();
+    greetIfNewDay();
+  });
 
   applyLoginItem(cfg);
   if (config.isFirstRun()) settingsWindow.open();
-  // --demo shows the first reminder, --demo=<reminder id> (e.g. --demo=lunch) a specific one.
+  // --demo shows the first reminder, --demo=<reminder id> (e.g. --demo=lunch) a specific one,
+  // and --demo=greeting the creator's hello.
   const demo = process.argv.find((a) => a === '--demo' || a.startsWith('--demo='));
   if (demo) {
     const id = demo.split('=')[1];
-    setTimeout(() => showTestReminder(id && config.get().reminders.find((r) => r.id === id)), 1500);
+    if (id === 'greeting') setTimeout(() => showGreeting(greetingText()), 1500);
+    else setTimeout(() => showTestReminder(id && config.get().reminders.find((r) => r.id === id)), 1500);
+  } else {
+    // Started at sign-in (or by hand): say hello once the desktop has settled.
+    setTimeout(greetIfNewDay, 4000);
   }
 }
 

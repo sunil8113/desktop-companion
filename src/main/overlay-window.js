@@ -70,6 +70,7 @@ class OverlayPresenter extends EventEmitter {
       reminder: { id: item.reminder.id, type: item.reminder.type, title: item.reminder.title, message: item.reminder.message },
       isTest: Boolean(item.meta.isTest),
       snoozed: Boolean(item.meta.snoozed),
+      isGreeting: Boolean(item.meta.isGreeting), // the creator's daily hello, not a reminder
       // Space the taskbar takes up, so the character stands on top of it.
       insets: {
         bottom: bounds.y + bounds.height - (workArea.y + workArea.height),
