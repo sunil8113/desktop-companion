@@ -4,6 +4,8 @@ A tray app for Windows and macOS that reminds you to drink water, move, eat lunc
 When a reminder fires, a character pops up at the bottom-right of your screen with a
 speech bubble and **Done** / **Snooze** buttons.
 
+Created by **Sunil**.
+
 ## Download
 
 ### Windows
