@@ -1465,5 +1465,8 @@
       "evening": "Year: complete. You: wonderful. See you on the other side. 🎉"
     }
   },
-  "specials": {}
+  "specials": {
+    "12-25": { "title": "Merry Christmas! 🎄", "morning": "The best gifts can't be wrapped.", "evening": "Laptop off, cake on. Enjoy!" },
+    "01-01": { "title": "HAPPY NEW YEAR! ", "morning": "New Year! New Beginings.", "evening": "Laptop off, celebration on. Enjoy!" }
+  }
 }
