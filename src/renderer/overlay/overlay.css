@@ -150,6 +150,7 @@ html, body {
   box-shadow: 0 6px 16px rgba(5, 20, 60, 0.25);
 }
 #hello-photo[hidden] { display: none; }
+#message .quote { color: var(--ink); font-style: italic; font-weight: 600; }
 
 .cheer .from {
   font-family: var(--signature-font);
